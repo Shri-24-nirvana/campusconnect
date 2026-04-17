@@ -1,0 +1,295 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import gsap from 'gsap';
+
+export default function ProfileView() {
+  const [profile, setProfile] = useState<any>({});
+  const [user, setUser] = useState<any>({});
+  const [showEditModal, setShowEditModal] = useState(false);
+  
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    const token = localStorage.getItem('access_token');
+    if (userStr) setUser(JSON.parse(userStr));
+
+    gsap.fromTo(".prof-item", 
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }
+    );
+
+    fetch('http://localhost:5000/profile', { headers: { Authorization: `Bearer ${token}` } })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => setProfile(data || {}))
+      .catch(() => {});
+  }, []);
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-32 max-w-[1500px] mx-auto min-h-screen">
+      
+      {/* LEFT COLUMN: Identity & Skills */}
+      <div className="md:col-span-4 flex flex-col gap-6">
+        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between h-full">
+          
+          <div className="w-full bg-gradient-to-t from-[#00e6e6]/10 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end pt-12 p-3 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)]">
+            <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
+            <img src="/avatar_1.png" alt="Avatar" className="w-[180px] h-[180px] object-cover absolute top-0 z-10 scale-125" />
+            
+            <div className="w-full bg-[#0d1424]/90 backdrop-blur-md rounded-2xl border border-[#00e6e6]/50 py-4 text-center z-20 mt-32">
+              <p className="text-sm font-bold text-white tracking-wider truncate uppercase">{user?.name || 'ARYAN SHARMA'}</p>
+              <p className="text-xs text-gray-400 mt-1 font-mono uppercase">({profile?.branch || 'CSE'}, {profile?.year || '2026'})</p>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-xl text-white font-bold tracking-widest mb-6">Skills</h2>
+            
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+               <div>
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">Python</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-gradient-to-r from-[#BC13FE] to-[#00e6e6] w-[80%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+               <div>
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">Java</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-[#00e6e6] w-[60%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+               <div>
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">C/C++</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-gradient-to-r from-[#BC13FE] to-[#00e6e6] w-[50%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+               <div>
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">UI/UX</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-[#00e6e6] w-[90%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+               <div className="col-span-2">
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">Cloud Computing</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-gradient-to-r from-[#BC13FE] to-[#00e6e6] w-[75%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+               <div className="col-span-2">
+                  <span className="text-[12px] text-gray-300 font-bold mb-2 block">ML</span>
+                  <div className="w-full h-2 bg-[#060b13] rounded-full overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)]">
+                    <div className="h-full bg-gradient-to-r from-[#BC13FE] to-[#00e6e6] w-[40%] shadow-[0_0_15px_#00e6e6]"></div>
+                  </div>
+               </div>
+            </div>
+          </div>
+
+          <button onClick={() => setShowEditModal(true)} className="w-full mt-10 bg-[#00e6e6] text-[#060b13] font-black tracking-widest text-[14px] py-4 rounded-xl shadow-[0_0_20px_rgba(0,230,230,0.5)] hover:bg-white transition-colors uppercase">
+            EDIT PROFILE
+          </button>
+        </div>
+      </div>
+
+      {/* RIGHT COLUMN: Bio, Projects, Records */}
+      <div className="md:col-span-8 flex flex-col gap-6">
+        
+        {/* Bio Segment */}
+        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 relative overflow-hidden flex flex-col">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-white font-bold tracking-widest text-[16px]">Bio</h2>
+            <span className="text-gray-500 cursor-pointer hover:text-white transition text-lg">⚙️</span>
+          </div>
+          <p className="text-gray-400 text-[14px] font-light leading-relaxed mb-6">
+            {profile?.bio || 'Full stack web developer passionate about creating innovative web applications and networks. Highly driven to combine systems engineering with beautiful interactive aesthetics. Proven track record leading multidisciplinary teams in deep tech environments and scaling architecture securely.'}
+          </p>
+          
+          <div className="w-full bg-[#111928]/60 border border-white/10 rounded-xl p-4 flex justify-between items-center mt-auto cursor-pointer hover:bg-white/5 transition-colors">
+            <span className="text-gray-300 text-sm">Architecture & Engineering</span>
+            <span className="text-[#00e6e6]">˅</span>
+          </div>
+        </div>
+
+        {/* Featured Projects Segment */}
+        <div className="prof-item flex flex-col pt-4">
+          <h2 className="text-white font-bold tracking-widest text-[16px] mb-6 pl-2">Featured Projects</h2>
+          
+          <div className="grid grid-cols-3 gap-6">
+             {/* Project 1 */}
+             <div className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
+                <div className="w-16 h-16 bg-[#060b13] rounded-lg border border-white/5 shadow-[0_0_20px_rgba(0,0,0,1)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform">
+                  <div className="flex gap-1 w-full p-1"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span><span className="w-1.5 h-1.5 rounded-full bg-green-500"></span></div>
+                  <div className="flex-1 w-full bg-[#111928] mt-1 flex flex-col gap-1 p-1">
+                     <span className="w-full h-1 bg-gray-600 rounded"></span><span className="w-3/4 h-1 bg-[#00e6e6] rounded"></span><span className="w-1/2 h-1 bg-[#BC13FE] rounded"></span>
+                  </div>
+                </div>
+                <h3 className="text-gray-300 font-bold text-[13px]">Code Editor</h3>
+             </div>
+
+             {/* Project 2 */}
+             <div className="bg-gradient-to-b from-[#1c0828]/50 to-[#060b13] border border-[#BC13FE]/30 rounded-3xl p-6 shadow-[0_0_25px_rgba(188,19,254,0.15)] flex flex-col items-center hover:border-[#BC13FE] transition group cursor-pointer h-48 justify-center gap-4 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[#BC13FE] opacity-[0.03] filter blur-xl"></div>
+                <div className="w-20 h-16 bg-[#e0e0fd] border-[3px] border-[#6b6bf9] rounded-lg shadow-[0_0_20px_rgba(107,107,249,0.5)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform relative z-10">
+                   <div className="w-full h-2 bg-[#6b6bf9]/20 rounded mb-1 flex items-center px-1"><span className="w-1 h-1 bg-[#6b6bf9] rounded-full"></span></div>
+                   <div className="w-full flex-1 bg-white rounded flex p-1 gap-1">
+                      <div className="bg-[#6b6bf9]/30 flex-1 rounded"></div>
+                      <div className="bg-[#6b6bf9]/10 flex-[2] rounded"></div>
+                   </div>
+                </div>
+                <h3 className="text-white font-bold text-[13px] relative z-10 text-center">Website Mockup</h3>
+             </div>
+
+             {/* Project 3 */}
+             <div className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
+                <div className="w-16 h-16 flex flex-col items-center group-hover:scale-110 transition-transform relative">
+                  <div className="w-10 h-4 rounded-[50%] bg-[#BC13FE] border-2 border-white/20 shadow-[0_0_15px_rgba(188,19,254,0.5)] absolute top-0 z-30"></div>
+                  <div className="w-6 h-10 border-r-2 border-l-2 border-white/20 absolute top-2 z-20"></div>
+                  <div className="flex gap-4 absolute top-10 w-[80px] justify-between">
+                     <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
+                     <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
+                  </div>
+                </div>
+                <h3 className="text-gray-300 font-bold text-[13px] mt-2">Database Schema</h3>
+             </div>
+          </div>
+        </div>
+
+        {/* Academic Record Segment */}
+        <div className="prof-item flex flex-col pt-4">
+          <h2 className="text-white font-bold tracking-widest text-[16px] mb-6 pl-2">Academic Record</h2>
+          
+          <div className="w-full bg-[#111928]/80 backdrop-blur-md border border-[#00e6e6]/30 shadow-[0_0_15px_rgba(0,230,230,0.15)] rounded-2xl p-6 flex justify-between items-center text-gray-300">
+             <span className="text-[15px] font-mono">{profile?.branch || 'CSE'}</span>
+             <span className="text-[15px] font-mono">{profile?.branch || 'CSE'}, {profile?.year || '2026'}</span>
+             <span className="text-[15px] pr-4">GPA: <span className="text-[#00e6e6] font-bold text-lg">9.1</span></span>
+          </div>
+        </div>
+
+      </div>
+
+      {showEditModal && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
+          <div className="w-[1200px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative flex flex-col h-[85vh]">
+            <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+              <h2 className="text-white text-xl font-bold tracking-widest uppercase flex items-center gap-3">
+                 <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#00e6e6] to-blue-500 flex justify-center items-center text-black font-black">C</span>
+                 CREATE YOUR PROFILE
+              </h2>
+              <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-white text-xl">✕</button>
+            </div>
+
+            <div className="flex gap-2 mb-6 pointer-events-none">
+              <div className="flex-1 bg-[#00e6e6] text-black font-bold text-center py-2 text-[10px] tracking-widest clipper">1. Basic Info</div>
+              <div className="flex-1 bg-[#111928] text-gray-400 font-bold text-center py-2 text-[10px] tracking-widest clipper">2. Skills & Ranks</div>
+              <div className="flex-1 bg-[#111928] text-gray-400 font-bold text-center py-2 text-[10px] tracking-widest rounded-r-lg">3. Links & Projects</div>
+            </div>
+            
+            <div className="flex-1 grid grid-cols-3 gap-6 overflow-y-auto css-scrollbar pr-2">
+               
+               {/* Col 1 */}
+               <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                     <label className="text-xs text-gray-400 uppercase tracking-wider">Full Name</label>
+                     <input type="text" placeholder="FULL NAME" defaultValue={user.name} className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm" />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                     <label className="text-xs text-gray-400 uppercase tracking-wider">College Email (Verification Sent: OTP Input)</label>
+                     <input type="email" placeholder="Enter College Email" defaultValue={user.email} className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm" />
+                  </div>
+                  <div className="flex gap-4">
+                     <div className="flex-1 flex flex-col gap-2">
+                        <label className="text-xs text-gray-400 uppercase tracking-wider">Branch</label>
+                        <select className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#00e6e6] text-sm">
+                           <option>{profile.branch || 'Branch'}</option>
+                           <option>CSE</option>
+                           <option>IT</option>
+                        </select>
+                     </div>
+                     <div className="flex-1 flex flex-col gap-2">
+                        <label className="text-xs text-gray-400 uppercase tracking-wider">Year</label>
+                        <select className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white outline-none focus:border-[#00e6e6] text-sm">
+                           <option>{profile.year || 'Year'}</option>
+                           <option>2026</option>
+                           <option>2027</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                     <label className="text-xs text-gray-400 uppercase tracking-wider">Password Change</label>
+                     <input type="password" placeholder="New Password" disabled className="w-full bg-[#111928]/60 border border-white/10 opacity-50 rounded-xl px-4 py-3 text-white outline-none text-sm" />
+                  </div>
+               </div>
+
+               {/* Col 2 */}
+               <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 relative">
+                     <label className="text-xs text-gray-400 uppercase tracking-wider relative z-10 bg-[#0d1424] w-fit px-2 -mb-4 ml-2">SKILLS (tags)</label>
+                     <div className="w-full bg-transparent border border-white/20 rounded-xl px-4 py-4 flex gap-2 flex-wrap min-h-[60px] pt-6">
+                        <span className="bg-white/10 text-gray-300 px-3 py-1 rounded text-xs">Python ✕</span>
+                        <span className="bg-white/10 text-gray-300 px-3 py-1 rounded text-xs">Java ✕</span>
+                     </div>
+                  </div>
+                  <div className="flex flex-col gap-2 relative">
+                     <label className="text-xs text-gray-400 uppercase tracking-wider relative z-10 bg-[#0d1424] w-fit px-2 -mb-4 ml-2">ACHIEVEMENTS</label>
+                     <textarea placeholder="Achievements..." className="w-full bg-transparent border border-white/20 rounded-xl px-4 pt-6 pb-4 min-h-[80px] text-white focus:outline-none focus:border-[#00e6e6] transition text-sm"></textarea>
+                  </div>
+                  
+                  <div className="mt-4 border border-white/10 rounded-2xl p-4 bg-[#111928]/40 relative">
+                     <div className="absolute top-0 right-4 -translate-y-1/2 bg-[#00e6e6] text-[#060b13] px-2 rounded font-bold text-[10px]">Select badges here</div>
+                     <label className="text-xs text-white font-bold uppercase tracking-wider block mb-4">SELECT POTENTIAL BADGES</label>
+                     <div className="grid grid-cols-2 gap-3 mb-6">
+                         <span className="bg-[#111928] border border-[#00e6e6]/30 text-gray-300 text-center py-2 rounded-lg text-xs hover:bg-[#00e6e6]/10 cursor-pointer transition">Top Builder 🏅</span>
+                         <span className="bg-[#111928] border border-white/10 text-gray-300 text-center py-2 rounded-lg text-xs hover:border-[#00e6e6]/50 cursor-pointer transition">HackathonPro 🚀</span>
+                         <span className="bg-[#111928] border border-white/10 text-gray-300 text-center py-2 rounded-lg text-xs hover:border-[#00e6e6]/50 cursor-pointer transition">Participant 🎖</span>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Col 3 */}
+               <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2 border border-white/10 rounded-2xl p-4 relative pt-6 bg-transparent">
+                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">SOCIAL & PROJECT LINKS</label>
+                     
+                     <div className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-2">
+                        <span className="text-[#0077B5] font-bold">in</span>
+                        <input type="text" placeholder="LINKEDIN PROFILE" className="flex-1 bg-transparent text-white outline-none text-xs" />
+                     </div>
+                     <div className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-2">
+                        <span className="text-white font-bold bg-black rounded-full px-1">github</span>
+                        <input type="text" placeholder="GITHUB PROFILE" className="flex-1 bg-transparent text-white outline-none text-xs" />
+                     </div>
+                     <div className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-2">
+                        <span className="text-white font-black">X</span>
+                        <input type="text" placeholder="X PROFILE" className="flex-1 bg-transparent text-white outline-none text-xs" />
+                     </div>
+                     <div className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-2">
+                        <span className="text-[#E1306C] font-bold">Insta</span>
+                        <input type="text" placeholder="INSTAGRAM PROFILE" className="flex-1 bg-transparent text-white outline-none text-xs" />
+                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2 border border-white/10 rounded-2xl p-4 relative pt-6 bg-transparent mt-2 flex-1">
+                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">UPLOAD RESUME (PDF/DOCX)</label>
+                     <div className="w-full h-full min-h-[100px] border-2 border-dashed border-[#00e6e6]/30 rounded-xl flex flex-col justify-center items-center gap-2 cursor-pointer hover:border-[#00e6e6] transition-colors bg-[#00e6e6]/5">
+                        <span className="text-[#00e6e6] text-2xl">↑_</span>
+                        <span className="text-xs text-gray-400 font-bold">Upload resume (PDF/DOCX)</span>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+            
+            <div className="pt-6 border-t border-white/5 flex justify-end gap-4 mt-6">
+               <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-white px-6 py-2 text-sm transition font-bold">CANCEL</button>
+               <button onClick={() => setShowEditModal(false)} className="bg-[#00e6e6] text-[#060b13] px-10 py-2 rounded-xl text-sm font-black tracking-widest shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">UPLOAD</button>
+            </div>
+
+            <style>{`
+               .clipper { clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%); margin-right: -10px; padding-right: 20px; }
+            `}</style>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}

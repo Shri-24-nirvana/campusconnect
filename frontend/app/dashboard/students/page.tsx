@@ -1,0 +1,56 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import gsap from 'gsap';
+
+export default function StudentsDirectoryView() {
+  const [users, setUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    gsap.fromTo(".dir-card", 
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.5)" }
+    );
+
+    const token = localStorage.getItem('access_token');
+    // Fetch all profiles from network
+    // Mocking for visual structure match
+  }, []);
+
+  return (
+    <div className="w-full h-[85vh] flex flex-col pb-10 max-w-[1700px] mx-auto min-h-screen">
+       <div className="flex justify-between items-center mb-8">
+          <h1 className="text-white text-2xl font-black tracking-widest uppercase">GLOBAL NETWORK MATRIX</h1>
+          <div className="flex gap-4">
+             <input type="text" placeholder="Search parameters (e.g. Python, CSE)" className="w-96 bg-[#111928]/80 border border-white/10 rounded-full px-6 py-3 text-white outline-none focus:border-[#00e6e6] transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)]" />
+             <button className="bg-[#00e6e6] text-[#060b13] font-black tracking-widest px-8 rounded-full shadow-[0_0_20px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">QUERY</button>
+          </div>
+       </div>
+
+       <div className="flex-1 bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] overflow-y-auto css-scrollbar">
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+             {/* Card Array generation */}
+             {[...Array(15)].map((_, i) => (
+                <div key={i} className="dir-card bg-[#060b13]/60 border border-white/5 hover:border-[#00e6e6]/50 transition-colors rounded-[2rem] p-4 flex flex-col shadow-[0_0_25px_rgba(0,0,0,0.5)] relative cursor-pointer group">
+                   <div className="absolute top-5 right-5 w-2 h-2 rounded-full bg-[#00e6e6] shadow-[0_0_8px_#00e6e6] z-20"></div>
+                   <div className="w-full h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-[1.5rem] flex justify-center items-end relative overflow-hidden border border-white/5 mb-3">
+                     <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                   </div>
+                   <h3 className="text-[14px] font-bold text-center text-white group-hover:text-[#00e6e6] transition-colors">{['Aryan Sharma', 'Rohan Gupta', 'Priya Singh', 'Ananya Rai'][i % 4]}</h3>
+                   <div className="flex justify-between items-center text-[11px] text-gray-400 mt-2 px-2 pb-3 border-b border-white/5">
+                     <span className="font-mono">{['CSE', 'ME', 'ECE', 'IT'][i % 4]}</span>
+                     <span className="text-white font-bold">{['Python', 'UI/UX', 'Java', 'Web3'][i % 4]}</span>
+                   </div>
+                   <div className="flex gap-2 mt-4">
+                     <button className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10">PROFILE</button>
+                     <button className="flex-1 py-1.5 rounded-md bg-transparent border border-[#00e6e6] text-[#00e6e6] text-[9px] font-black tracking-wider hover:bg-[#00e6e6] hover:text-[#060b13] transition shadow-[0_0_10px_rgba(0,230,230,0.2)]">CONNECT</button>
+                   </div>
+                </div>
+             ))}
+          </div>
+
+       </div>
+    </div>
+  );
+}
