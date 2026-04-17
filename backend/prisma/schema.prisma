@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(uuid())
+  name          String
+  email         String       @unique
+  passwordHash  String
+  role          String       @default("STUDENT") // STUDENT, ALUMNI, ADMIN
+  collegeId     String?
+  createdAt     DateTime     @default(now())
+  profile       Profile?
+  posts         Post[]
+  teams         Team[]       @relation("CreatedTeams")
+  teamMembers   TeamMember[]
+  questions     Question[]
+  answers       Answer[]
+  votes         Vote[]
+  ranking       Ranking?
+}
+
+model Profile {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id])
+  bio          String?
+  branch       String?
+  year         String?
+  skills       String[]
+  projects     String?  // Could be stringified JSON
+  achievements String?
+  linkedin     String?
+  github       String?
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  type        String   // JOB, INTERNSHIP, HACKATHON, GENERAL
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+}
+
+model Team {
+  id          String       @id @default(uuid())
+  createdById String
+  createdBy   User         @relation("CreatedTeams", fields: [createdById], references: [id])
+  targetEvent String
+  description String
+  createdAt   DateTime     @default(now())
+  members     TeamMember[]
+}
+
+model TeamMember {
+  id       String @id @default(uuid())
+  teamId   String
+  team     Team   @relation(fields: [teamId], references: [id])
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  role     String
+  status   String @default("PENDING") // PENDING, ACCEPTED, REJECTED
+}
+
+model Question {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  answers   Answer[]
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  content    String
+  upvotes    Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Vote {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id])
+  targetId String // Reference to answer/post ID
+  type     String // UPVOTE, DOWNVOTE
+}
+
+model Ranking {
+  id      String  @id @default(uuid())
+  userId  String  @unique
+  user    User    @relation(fields: [userId], references: [id])
+  score   Int     @default(0)
+  badge   String?
+}
