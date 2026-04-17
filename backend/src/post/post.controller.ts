@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Param } from '@nestjs/common';
 import { PostService } from './post.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -15,5 +15,17 @@ export class PostController {
   @Post() // Protected route
   async createPost(@Request() req: any, @Body() body: any) {
     return this.postService.createPost(req.user.id, body);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':postId/comment')
+  async addComment(@Request() req: any, @Param('postId') postId: string, @Body() body: any) {
+    return this.postService.addComment(req.user.id, postId, body.content);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Post(':postId/save')
+  async savePost(@Request() req: any, @Param('postId') postId: string) {
+    return this.postService.savePost(req.user.id, postId);
   }
 }

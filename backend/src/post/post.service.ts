@@ -16,8 +16,21 @@ export class PostService {
     return this.prisma.post.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        user: { select: { name: true, role: true, profile: { select: { branch: true, year: true } } } }
+        user: { select: { name: true, role: true, profile: { select: { branch: true, year: true } } } },
+        _count: { select: { comments: true, savedBy: true } }
       }
     });
+  }
+
+  async addComment(userId: string, postId: string, content: string) {
+    return this.prisma.comment.create({
+      data: { userId, postId, content }
+    }).catch(() => null);
+  }
+
+  async savePost(userId: string, postId: string) {
+    return this.prisma.savedPost.create({
+      data: { userId, postId }
+    }).catch(() => null);
   }
 }

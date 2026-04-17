@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import gsap from 'gsap';
 
 export default function TeamsView() {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [joinRequests, setJoinRequests] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     gsap.fromTo(".team-item", 
@@ -12,6 +13,19 @@ export default function TeamsView() {
       { opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: "power2.out" }
     );
   }, []);
+
+  const handleJoinTeam = async (teamId: string) => {
+      setJoinRequests(prev => ({ ...prev, [teamId]: true }));
+      try {
+          const token = localStorage.getItem('access_token');
+          await fetch(`http://localhost:5000/teams/join/${teamId}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` }
+          });
+      } catch (e) {
+          setJoinRequests(prev => ({ ...prev, [teamId]: false }));
+      }
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pb-20 max-w-[1700px] mx-auto min-h-screen relative">
@@ -133,11 +147,24 @@ export default function TeamsView() {
                 <img src="/avatar_1.png" alt="Avatar" className="w-full h-full object-cover scale-150 relative top-1 pb-1" />
               </div>
               <div className="flex-1 truncate border-b border-white/5 pb-2">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-[14px] font-bold text-white">Rohan Gupta</h4>
-                  <span className="text-[10px] text-gray-500 font-mono">Members</span>
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="text-[14px] font-bold text-white">Algorithm Junkies</h4>
+                  <span className="text-[10px] text-gray-500 font-mono">Members: 3/4</span>
                 </div>
-                <p className="text-[11px] text-gray-400 truncate">CSE</p>
+                <div className="flex justify-between items-center">
+                    <p className="text-[11px] text-gray-400 truncate w-3/4">We are looking for a UI designer</p>
+                    <button 
+                       disabled={joinRequests['mock_team_2']}
+                       onClick={() => handleJoinTeam('mock_team_2')}
+                       className={`px-3 py-1 rounded text-[9px] font-bold transition shadow-[0_0_10px_rgba(0,230,230,0.2)] ${
+                           joinRequests['mock_team_2'] 
+                           ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50 cursor-not-allowed'
+                           : 'bg-[#00e6e6]/20 text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]'
+                       }`}
+                    >
+                       {joinRequests['mock_team_2'] ? 'REQUESTED ✓' : 'JOIN TEAM'}
+                    </button>
+                </div>
               </div>
             </div>
 
@@ -161,11 +188,24 @@ export default function TeamsView() {
                 <img src="/avatar_1.png" alt="Avatar" className="w-full h-full object-cover scale-150 relative top-1 pb-1" />
               </div>
               <div className="flex-1 truncate">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-[14px] font-bold text-white">Priya Singh</h4>
-                  <span className="text-[10px] text-gray-500 font-mono">Nonline</span>
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="text-[14px] font-bold text-white">Frontend Masters</h4>
+                  <span className="text-[10px] text-gray-500 font-mono">Members: 2/5</span>
                 </div>
-                <p className="text-[11px] text-gray-400 truncate">CSE</p>
+                <div className="flex justify-between items-center">
+                    <p className="text-[11px] text-gray-400 truncate w-3/4">Seeking react devs</p>
+                    <button 
+                       disabled={joinRequests['mock_team_4']}
+                       onClick={() => handleJoinTeam('mock_team_4')}
+                       className={`px-3 py-1 rounded text-[9px] font-bold transition shadow-[0_0_10px_rgba(0,230,230,0.2)] ${
+                           joinRequests['mock_team_4'] 
+                           ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50 cursor-not-allowed'
+                           : 'bg-[#00e6e6]/20 text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]'
+                       }`}
+                    >
+                       {joinRequests['mock_team_4'] ? 'REQUESTED ✓' : 'JOIN TEAM'}
+                    </button>
+                </div>
               </div>
             </div>
 

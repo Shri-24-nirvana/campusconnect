@@ -30,4 +30,24 @@ export class QnaService {
       data: { userId, questionId, content }
     });
   }
+
+  async toggleUpvote(userId: string, entityId: string, type: string) {
+      if(type === 'ANSWER') {
+          return this.prisma.answer.update({
+              where: { id: entityId },
+              data: { upvotes: { increment: 1 } }
+          });
+      }
+      return null;
+  }
+
+  async requestMentorship(senderId: string, alumniId: string) {
+      return this.prisma.mentorshipRequest.create({
+          data: {
+              senderId,
+              alumniId,
+              status: 'PENDING'
+          }
+      });
+  }
 }

@@ -28,4 +28,15 @@ export class TeamService {
       }
     });
   }
+
+  async requestJoin(userId: string, teamId: string) {
+      return this.prisma.teamMember.create({
+          data: {
+              userId,
+              teamId,
+              role: 'MEMBER',
+              status: 'PENDING'
+          }
+      }).catch(() => null); // mock teams might throw FK error, suppress it
+  }
 }

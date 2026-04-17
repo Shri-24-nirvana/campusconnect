@@ -5,6 +5,9 @@ import gsap from 'gsap';
 
 export default function QnAAlumniHub() {
   const [questions, setQuestions] = useState<any[]>([]);
+  const [mentorshipStatus, setMentorshipStatus] = useState<Record<string, boolean>>({});
+  const [questionText, setQuestionText] = useState('');
+  const [votes, setVotes] = useState<Record<string, number>>({});
 
   useEffect(() => {
     gsap.fromTo(".qna-item", 
@@ -12,6 +15,49 @@ export default function QnAAlumniHub() {
       { opacity: 1, x: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }
     );
   }, []);
+
+  const submitQuestion = async () => {
+      if(!questionText.trim()) return;
+      
+      const cached = questionText;
+      setQuestionText('');
+      
+      try {
+          const token = localStorage.getItem('access_token');
+          await fetch(`http://localhost:5000/qna`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ title: cached, content: cached })
+          });
+          // Refresh...
+      } catch (err) {}
+  };
+
+  const handleEntityVote = async (id: string, delta: number) => {
+      setVotes(prev => ({ ...prev, [id]: (prev[id] || 0) + delta }));
+      try {
+          const token = localStorage.getItem('access_token');
+          await fetch(`http://localhost:5000/qna/${id}/upvote`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ type: 'QUESTION' })
+          });
+      } catch (err) {}
+  };
+
+  const handleRequestMentorship = async (alumniId: string) => {
+      // Optimistic update
+      setMentorshipStatus(prev => ({ ...prev, [alumniId]: true }));
+      try {
+         const token = localStorage.getItem('access_token');
+         await fetch(`http://localhost:5000/qna/mentorship/${alumniId}`, {
+             method: 'POST',
+             headers: { Authorization: `Bearer ${token}` }
+         });
+      } catch (err) {
+         setMentorshipStatus(prev => ({ ...prev, [alumniId]: false }));
+      }
+  };
 
   return (
     <div className="w-full pb-20 max-w-[1700px] mx-auto min-h-screen">
@@ -23,8 +69,14 @@ export default function QnAAlumniHub() {
 
        <div className="bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex max-w-[55%] mb-8 relative">
           <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-[#00e6e6]/30 to-transparent pointer-events-none opacity-50"></div>
-          <input type="text" placeholder="ASK A QUESTION" className="w-full bg-transparent border-none text-white outline-none pl-4 text-sm" />
-          <button className="bg-[#00e6e6] text-[#060b13] px-8 py-3 rounded-xl font-black shadow-[0_0_20px_rgba(0,230,230,0.4)] hover:bg-white hover:text-black transition uppercase text-xs tracking-widest shrink-0 ml-4">
+          <input 
+              type="text" 
+              value={questionText}
+              onChange={e => setQuestionText(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && submitQuestion()}
+              placeholder="ASK A QUESTION" 
+              className="w-full bg-transparent border-none text-white outline-none pl-4 text-sm" />
+          <button onClick={submitQuestion} className="bg-[#00e6e6] text-[#060b13] px-8 py-3 rounded-xl font-black shadow-[0_0_20px_rgba(0,230,230,0.4)] hover:bg-white hover:text-black transition uppercase text-xs tracking-widest shrink-0 ml-4">
             ASK A QUESTION
           </button>
        </div>
@@ -46,9 +98,9 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/60 border border-[#00e6e6]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#00e6e6]/10 mr-6">
-                      <button className="text-[#00e6e6] text-xl mb-2 hover:scale-125 transition">▲</button>
-                      <span className="text-white font-black text-xl mb-2">10</span>
-                      <button className="text-[#00e6e6]/50 text-xl hover:text-[#00e6e6] hover:scale-125 transition">▼</button>
+                      <button onClick={() => handleEntityVote('q1', 1)} className="text-[#00e6e6] text-xl mb-2 hover:scale-125 transition">▲</button>
+                      <span className="text-white font-black text-xl mb-2">{10 + (votes['q1'] || 0)}</span>
+                      <button onClick={() => handleEntityVote('q1', -1)} className="text-[#00e6e6]/50 text-xl hover:text-[#00e6e6] hover:scale-125 transition">▼</button>
                    </div>
                    <div className="flex-1">
                       <div className="flex gap-4 mb-4 items-center">
@@ -86,9 +138,9 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/40 border border-[#BC13FE]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#BC13FE]/10 mr-6">
-                      <button className="text-[#BC13FE] text-xl mb-2 hover:scale-125 transition">▲</button>
-                      <span className="text-white font-black text-xl mb-2">2</span>
-                      <button className="text-[#BC13FE]/50 text-xl hover:text-[#BC13FE] hover:scale-125 transition">▼</button>
+                      <button onClick={() => handleEntityVote('q2', 1)} className="text-[#BC13FE] text-xl mb-2 hover:scale-125 transition">▲</button>
+                      <span className="text-white font-black text-xl mb-2">{2 + (votes['q2'] || 0)}</span>
+                      <button onClick={() => handleEntityVote('q2', -1)} className="text-[#BC13FE]/50 text-xl hover:text-[#BC13FE] hover:scale-125 transition">▼</button>
                    </div>
                    <div className="flex-1">
                       <div className="flex gap-4 mb-4 items-center">
@@ -146,8 +198,15 @@ export default function QnAAlumniHub() {
                                <p className="text-[9px] text-gray-400">SDE at Amazon</p>
                             </div>
                          </div>
-                         <button className="w-full bg-gradient-to-r from-[#00e6e6]/20 to-transparent border border-[#00e6e6]/50 text-[#00e6e6] py-2 rounded-lg text-[9px] font-bold tracking-widest hover:bg-[#00e6e6] hover:text-[#060b13] transition shadow-[0_0_10px_rgba(0,230,230,0.1)]">
-                            REQUEST MENTORSHIP
+                         <button 
+                            disabled={mentorshipStatus[`mock_${num}`]}
+                            onClick={() => handleRequestMentorship(`mock_${num}`)}
+                            className={`w-full py-2 rounded-lg text-[9px] font-bold tracking-widest transition shadow-[0_0_10px_rgba(0,230,230,0.1)] ${
+                                mentorshipStatus[`mock_${num}`] 
+                                ? "bg-green-500/20 text-green-400 border border-green-500/50 cursor-not-allowed"
+                                : "bg-gradient-to-r from-[#00e6e6]/20 to-transparent border border-[#00e6e6]/50 text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]"
+                            }`}>
+                            {mentorshipStatus[`mock_${num}`] ? 'REQUEST SENT ✓' : 'REQUEST MENTORSHIP'}
                          </button>
                       </div>
                    ))}

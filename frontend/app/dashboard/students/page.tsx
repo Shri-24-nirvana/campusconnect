@@ -5,6 +5,7 @@ import gsap from 'gsap';
 
 export default function StudentsDirectoryView() {
   const [users, setUsers] = useState<any[]>([]);
+  const [connectStatus, setConnectStatus] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     gsap.fromTo(".dir-card", 
@@ -13,9 +14,21 @@ export default function StudentsDirectoryView() {
     );
 
     const token = localStorage.getItem('access_token');
-    // Fetch all profiles from network
-    // Mocking for visual structure match
+    // We mock the user ids as network targets for now until the user fetches the backend natively.
   }, []);
+
+  const handleConnect = async (targetId: string) => {
+      setConnectStatus(prev => ({ ...prev, [targetId]: true }));
+      try {
+          const token = localStorage.getItem('access_token');
+          await fetch(`http://localhost:5000/connections/${targetId}`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` }
+          });
+      } catch (err) {
+          setConnectStatus(prev => ({ ...prev, [targetId]: false }));
+      }
+  };
 
   return (
     <div className="w-full h-[85vh] flex flex-col pb-10 max-w-[1700px] mx-auto min-h-screen">
@@ -43,8 +56,18 @@ export default function StudentsDirectoryView() {
                      <span className="text-white font-bold">{['Python', 'UI/UX', 'Java', 'Web3'][i % 4]}</span>
                    </div>
                    <div className="flex gap-2 mt-4">
-                     <button className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10">PROFILE</button>
-                     <button className="flex-1 py-1.5 rounded-md bg-transparent border border-[#00e6e6] text-[#00e6e6] text-[9px] font-black tracking-wider hover:bg-[#00e6e6] hover:text-[#060b13] transition shadow-[0_0_10px_rgba(0,230,230,0.2)]">CONNECT</button>
+                     <button className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
+                     <button 
+                         disabled={connectStatus[`mock_user_${i}`]}
+                         onClick={() => handleConnect(`mock_user_${i}`)}
+                         className={`flex-1 py-1.5 rounded-md border text-[9px] font-black tracking-wider transition shadow-[0_0_10px_rgba(0,230,230,0.2)] ${
+                             connectStatus[`mock_user_${i}`]
+                             ? "bg-purple-500/20 text-purple-400 border-purple-500/50 cursor-not-allowed"
+                             : "bg-transparent border-[#00e6e6] text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]"
+                         }`}
+                     >
+                         {connectStatus[`mock_user_${i}`] ? "PENDING..." : "CONNECT"}
+                     </button>
                    </div>
                 </div>
              ))}

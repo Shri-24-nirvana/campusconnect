@@ -15,11 +15,23 @@ export class ProfileService {
   }
 
   async updateProfile(userId: string, data: any) {
-    const { bio, branch, year, skills, projects, achievements, linkedin, github } = data;
+    const { bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl } = data;
+    
+    // Convert string array to Prisma String[] format if passed as a comma-separated string from UI inputs
+    let skillsArray = data.skills;
+    if (typeof skillsArray === 'string') {
+        skillsArray = skillsArray.split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    const payload = { 
+        bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl, 
+        skills: skillsArray 
+    };
+
     return this.prisma.profile.upsert({
       where: { userId },
-      update: { bio, branch, year, skills, projects, achievements, linkedin, github },
-      create: { userId, bio, branch, year, skills, projects, achievements, linkedin, github }
+      update: payload,
+      create: { userId, ...payload }
     });
   }
 }

@@ -9,21 +9,30 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(uuid())
-  name          String
-  email         String       @unique
-  passwordHash  String
-  role          String       @default("STUDENT") // STUDENT, ALUMNI, ADMIN
-  collegeId     String?
-  createdAt     DateTime     @default(now())
-  profile       Profile?
-  posts         Post[]
-  teams         Team[]       @relation("CreatedTeams")
-  teamMembers   TeamMember[]
-  questions     Question[]
-  answers       Answer[]
-  votes         Vote[]
-  ranking       Ranking?
+  id                    String       @id @default(uuid())
+  name                  String
+  email                 String       @unique
+  passwordHash          String
+  role                  String       @default("STUDENT") // STUDENT, ALUMNI, ADMIN
+  collegeId             String?
+  createdAt             DateTime     @default(now())
+  profile               Profile?
+  posts                 Post[]
+  teams                 Team[]       @relation("CreatedTeams")
+  teamMembers           TeamMember[]
+  questions             Question[]
+  answers               Answer[]
+  votes                 Vote[]
+  ranking               Ranking?
+  
+  sentConnections       Connection[]          @relation("SentConnections")
+  receivedConnections   Connection[]          @relation("ReceivedConnections")
+  sentMessages          Message[]             @relation("SentMessages")
+  receivedMessages      Message[]             @relation("ReceivedMessages")
+  comments              Comment[]
+  savedPosts            SavedPost[]
+  sentMentorships       MentorshipRequest[]   @relation("SentMentorships")
+  receivedMentorships   MentorshipRequest[]   @relation("ReceivedMentorships")
 }
 
 model Profile {
@@ -33,11 +42,15 @@ model Profile {
   bio          String?
   branch       String?
   year         String?
+  collegeEmail String?
   skills       String[]
   projects     String?  // Could be stringified JSON
   achievements String?
   linkedin     String?
   github       String?
+  xProfile     String?
+  instagram    String?
+  resumeUrl    String?
 }
 
 model Post {
@@ -48,6 +61,8 @@ model Post {
   title       String
   description String
   createdAt   DateTime @default(now())
+  comments    Comment[]
+  savedBy     SavedPost[]
 }
 
 model Team {
@@ -63,7 +78,7 @@ model Team {
 model TeamMember {
   id       String @id @default(uuid())
   teamId   String
-  team     Team   @relation(fields: [teamId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   userId   String
   user     User   @relation(fields: [userId], references: [id])
   role     String
@@ -83,7 +98,7 @@ model Question {
 model Answer {
   id         String   @id @default(uuid())
   questionId String
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   userId     String
   user       User     @relation(fields: [userId], references: [id])
   content    String
@@ -105,4 +120,57 @@ model Ranking {
   user    User    @relation(fields: [userId], references: [id])
   score   Int     @default(0)
   badge   String?
+}
+
+model Connection {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentConnections", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedConnections", fields: [receiverId], references: [id])
+  status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt  DateTime @default(now())
+  @@unique([senderId, receiverId])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model SavedPost {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  @@unique([userId, postId])
+}
+
+model MentorshipRequest {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("SentMentorships", fields: [senderId], references: [id])
+  alumniId   String
+  alumni     User     @relation("ReceivedMentorships", fields: [alumniId], references: [id])
+  status     String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  message    String?
+  createdAt  DateTime @default(now())
+  @@unique([senderId, alumniId])
 }
