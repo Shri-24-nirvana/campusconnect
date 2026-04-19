@@ -37,6 +37,18 @@ export default function Sidebar() {
           );
         })}
       </div>
+
+      {/* Logout Navigation */}
+      <div className="mt-auto mb-10 px-6">
+        <button 
+          onClick={() => {
+            localStorage.clear();
+            window.location.href = '/login';
+          }}
+          className="w-full flex items-center justify-center gap-4 px-6 py-4 rounded-xl text-red-400 border border-red-500/20 hover:bg-red-500/10 hover:border-red-500/50 transition-all drop-shadow-[0_0_10px_rgba(255,0,0,0.1)] hover:drop-shadow-[0_0_15px_rgba(255,0,0,0.3)]">
+          <span className="font-bold tracking-widest text-[14px] uppercase">Log Out</span>
+        </button>
+      </div>
     </aside>
   );
 }

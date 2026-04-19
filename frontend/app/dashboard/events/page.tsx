@@ -7,6 +7,7 @@ export default function JobsInternshipsView() {
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [activeCommentPost, setActiveCommentPost] = useState<any>(null);
   const [commentText, setCommentText] = useState('');
+  const [activeEvent, setActiveEvent] = useState<any>(null);
   const [interactions, setInteractions] = useState<Record<string, { liked: boolean, saved: boolean }>>({});
 
   useEffect(() => {
@@ -109,8 +110,8 @@ export default function JobsInternshipsView() {
           </select>
        </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pr-8 overflow-y-auto css-scrollbar pb-16">
-          
+       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pr-8 overflow-y-auto css-scrollbar pb-16">
+          <div className="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {opportunities.map((opp, i) => (
               <div key={opp.id} className={`opp-card bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 hover:border-${opp.type === 'HACKATHON' ? '[#BC13FE]' : '[#00e6e6]'}/50 rounded-[2rem] p-6 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col relative transition-all`}>
                  <div className="absolute top-6 right-6 text-gray-500 cursor-pointer hover:text-white">⋮</div>
@@ -149,8 +150,53 @@ export default function JobsInternshipsView() {
                  </div>
               </div>
           ))}
+          </div>
 
+           {/* Upcoming Events Module */}
+           <div className="md:col-span-1 flex flex-col gap-6">
+              <div className="bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit sticky top-0">
+                 <h2 className="text-white font-bold tracking-widest uppercase text-[12px] mb-6">UPCOMING EVENTS</h2>
+                 
+                 <div className="flex flex-col gap-4">
+                    <div onClick={() => setActiveEvent({ title: 'Tech Expo 2024' })} className="border border-[#00e6e6]/30 rounded-xl p-4 bg-gradient-to-r from-[#00e6e6]/5 to-transparent hover:from-[#00e6e6]/20 transition-all cursor-pointer">
+                       <h3 className="text-white font-bold text-sm">Tech Expo 2024</h3>
+                       <p className="text-[10px] text-gray-400 mt-1">Saturday at 11:00 PM</p>
+                    </div>
+                    
+                    <div onClick={() => setActiveEvent({ title: 'System Design Workshop' })} className="border border-[#BC13FE]/30 rounded-xl p-4 bg-gradient-to-r from-[#BC13FE]/5 to-transparent hover:from-[#BC13FE]/20 transition-all cursor-pointer">
+                       <h3 className="text-white font-bold text-sm">Workshop</h3>
+                       <p className="text-[10px] text-gray-400 mt-1">Join Cwlp at 12:00 PM</p>
+                    </div>
+                 </div>
+              </div>   
+           </div>
        </div>
+
+       {/* Event Details Modal */}
+       {activeEvent && (
+          <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
+             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in">
+                <button onClick={() => setActiveEvent(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
+                
+                <div className="w-16 h-16 bg-gradient-to-br from-[#111928] to-[#060b13] rounded-2xl border border-white/10 flex justify-center items-center text-3xl shadow-[0_0_15px_rgba(0,0,0,0.5)] mb-6">
+                  📆
+                </div>
+                <h2 className="text-white text-2xl font-black mb-2">{activeEvent.title}</h2>
+                <div className="flex gap-4 mb-6 text-xs font-mono text-[#00e6e6]">
+                   <span>Saturday, 11:00 PM</span>
+                   <span>Ojas Conference Hall</span>
+                </div>
+                
+                <p className="text-gray-300 text-sm leading-relaxed mb-8">
+                   Join us for this massive upcoming event on campus! We will be covering exactly what tech stacks are leading the current global enterprise architectures. You can register your team straight from your dashboard.
+                </p>
+
+                <button onClick={() => setActiveEvent(null)} className="w-full bg-[#00e6e6] text-[#060b13] font-black tracking-widest px-8 py-3 rounded-xl shadow-[0_0_20px_rgba(0,230,230,0.4)] hover:bg-white transition-colors uppercase text-sm">
+                   REGISTER NOW
+                </button>
+             </div>
+          </div>
+       )}
 
        {/* Interactive Comment Modal overlay */}
        {activeCommentPost && (

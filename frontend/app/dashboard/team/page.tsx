@@ -12,6 +12,18 @@ export default function TeamsView() {
       { opacity: 0, scale: 0.95 },
       { opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: "power2.out" }
     );
+
+    const token = localStorage.getItem('access_token');
+    if (token) {
+       // Assuming /teams endpoint returns teams the user has pending logic for
+       fetch('http://localhost:5000/teams', {
+          headers: { Authorization: `Bearer ${token}` }
+       })
+       .then(res => res.json())
+       .then(data => {
+           // We map the mock logic visually until the array is fully integrated natively
+       }).catch(() => {});
+    }
   }, []);
 
   const handleJoinTeam = async (teamId: string) => {

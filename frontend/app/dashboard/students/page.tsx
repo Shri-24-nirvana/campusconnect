@@ -14,7 +14,24 @@ export default function StudentsDirectoryView() {
     );
 
     const token = localStorage.getItem('access_token');
-    // We mock the user ids as network targets for now until the user fetches the backend natively.
+    if (token) {
+        fetch('http://localhost:5000/connections', {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data)) {
+                const map: Record<string, boolean> = {};
+                data.forEach(conn => {
+                   if (conn.status === 'PENDING') {
+                       map[conn.receiverId] = true;
+                   }
+                });
+                setConnectStatus(map);
+            }
+        })
+        .catch(err => console.error(err));
+    }
   }, []);
 
   const handleConnect = async (targetId: string) => {

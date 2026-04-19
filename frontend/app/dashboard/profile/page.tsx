@@ -73,6 +73,24 @@ export default function ProfileView() {
       
       {/* LEFT COLUMN: Identity & Skills */}
       <div className="md:col-span-4 flex flex-col gap-6">
+        <div className="prof-item flex gap-4 w-full">
+          <div onClick={() => profile?.github && window.open(profile.github.startsWith('http') ? profile.github : `https://${profile.github}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#00e6e6]/60 transition-colors group relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#00e6e6]/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+             <div className="w-12 h-12 bg-[#111928] border border-white/10 rounded-2xl flex justify-center items-center text-xl shadow-[0_0_10px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform">🐙</div>
+             <div>
+                <p className="text-gray-500 text-[10px] tracking-widest uppercase font-bold">Github / Projects</p>
+                <p className="text-white text-sm font-bold tracking-widest mt-1">{profile?.github ? 'Linked' : 'Not Linked'}</p>
+             </div>
+          </div>
+          <div onClick={() => profile?.linkedin && window.open(profile.linkedin.startsWith('http') ? profile.linkedin : `https://${profile.linkedin}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#BC13FE]/60 transition-colors group relative overflow-hidden">
+             <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#BC13FE]/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+             <div className="w-12 h-12 bg-[#111928] border border-white/10 rounded-2xl flex justify-center items-center text-xl shadow-[0_0_10px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform">💼</div>
+             <div>
+                <p className="text-gray-500 text-[10px] tracking-widest uppercase font-bold">LinkedIn</p>
+                <p className="text-white text-sm font-bold tracking-widest mt-1">{profile?.linkedin ? 'Linked' : 'Not Linked'}</p>
+             </div>
+          </div>
+        </div>
         <div className="prof-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between h-full">
           
           <div className="w-full bg-gradient-to-t from-[#00e6e6]/10 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end pt-12 p-3 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)]">
