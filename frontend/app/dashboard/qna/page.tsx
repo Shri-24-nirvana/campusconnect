@@ -24,7 +24,7 @@ export default function QnAAlumniHub() {
       
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/qna`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/qna`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
               body: JSON.stringify({ title: cached, content: cached })
@@ -37,7 +37,7 @@ export default function QnAAlumniHub() {
       setVotes(prev => ({ ...prev, [id]: (prev[id] || 0) + delta }));
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/qna/${id}/upvote`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/qna/${id}/upvote`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
               body: JSON.stringify({ type: 'QUESTION' })
@@ -50,7 +50,7 @@ export default function QnAAlumniHub() {
       setMentorshipStatus(prev => ({ ...prev, [alumniId]: true }));
       try {
          const token = localStorage.getItem('access_token');
-         await fetch(`http://localhost:5000/qna/mentorship/${alumniId}`, {
+         await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/qna/mentorship/${alumniId}`, {
              method: 'POST',
              headers: { Authorization: `Bearer ${token}` }
          });

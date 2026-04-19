@@ -26,7 +26,7 @@ export default function ProfileView() {
     );
 
     if (token) {
-      fetch('http://localhost:5000/profile', { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/profile`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
             if(data) {
@@ -42,7 +42,7 @@ export default function ProfileView() {
     setIsSaving(true);
     const token = localStorage.getItem('access_token');
     try {
-        await fetch('http://localhost:5000/profile', {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/profile`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export default function ProfileView() {
         });
         
         // Refresh local UI copy
-        const updatedReq = await fetch('http://localhost:5000/profile', { headers: { Authorization: `Bearer ${token}` } });
+        const updatedReq = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if(updatedReq.ok) {
             const upData = await updatedReq.json();
             setProfile(upData);

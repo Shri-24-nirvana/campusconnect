@@ -15,7 +15,7 @@ export default function StudentsDirectoryView() {
 
     const token = localStorage.getItem('access_token');
     if (token) {
-        fetch('http://localhost:5000/connections', {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => res.json())
@@ -38,7 +38,7 @@ export default function StudentsDirectoryView() {
       setConnectStatus(prev => ({ ...prev, [targetId]: true }));
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/connections/${targetId}`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections/${targetId}`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` }
           });

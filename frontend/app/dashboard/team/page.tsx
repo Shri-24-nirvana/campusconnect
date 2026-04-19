@@ -16,7 +16,7 @@ export default function TeamsView() {
     const token = localStorage.getItem('access_token');
     if (token) {
        // Assuming /teams endpoint returns teams the user has pending logic for
-       fetch('http://localhost:5000/teams', {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
@@ -30,7 +30,7 @@ export default function TeamsView() {
       setJoinRequests(prev => ({ ...prev, [teamId]: true }));
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/teams/join/${teamId}`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/join/${teamId}`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` }
           });

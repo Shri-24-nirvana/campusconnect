@@ -20,13 +20,13 @@ export default function Dashboard() {
     );
 
     // Feeds
-    fetch('http://localhost:5000/profile', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/profile`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.ok ? res.json() : null).then(data => data && setProfile(data)).catch(() => {});
-    fetch('http://localhost:5000/posts', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/posts`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.ok ? res.json() : []).then(data => Array.isArray(data) ? setPosts(data) : setPosts([])).catch(() => {});
-    fetch('http://localhost:5000/teams', { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.ok ? res.json() : []).then(data => Array.isArray(data) ? setTeams(data) : setTeams([])).catch(() => {});
-    fetch('http://localhost:5000/ranking/recalculate', { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/ranking/recalculate`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
       .then(res => res.ok ? res.json() : null).then(data => setRanking(data)).catch(() => {});
   }, []);
 

@@ -21,7 +21,7 @@ export default function CreatePost() {
     setLoading(true);
     const token = localStorage.getItem('access_token');
 
-    await fetch('http://localhost:5000/posts', {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/posts`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(formData)

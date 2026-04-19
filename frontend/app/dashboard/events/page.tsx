@@ -35,7 +35,7 @@ export default function JobsInternshipsView() {
       setInteractions(prev => ({ ...prev, [id]: { ...prev[id], saved: !prev[id]?.saved } }));
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/posts/${id}/save`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/posts/${id}/save`, {
               method: 'POST',
               headers: { Authorization: `Bearer ${token}` }
           });
@@ -52,7 +52,7 @@ export default function JobsInternshipsView() {
 
       try {
           const token = localStorage.getItem('access_token');
-          await fetch(`http://localhost:5000/posts/${targetId}/comment`, {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/posts/${targetId}/comment`, {
               method: 'POST',
               headers: { 
                   'Content-Type': 'application/json',

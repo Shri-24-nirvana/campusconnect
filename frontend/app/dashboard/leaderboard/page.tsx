@@ -9,7 +9,7 @@ export default function Leaderboard() {
   const [leaders, setLeaders] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/ranking/leaderboard')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/ranking/leaderboard`)
       .then(res => res.json())
       .then(data => {
         setLeaders(data);
