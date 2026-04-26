@@ -150,7 +150,7 @@ export default function ProfileView() {
           
           <div className="grid grid-cols-3 gap-6">
              {/* Dynamic from links? We'll just show placeholders or map array if we stored it */}
-             <div className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
+             <div onClick={() => profile?.projects && window.open(profile.projects.startsWith('http') ? profile.projects : `https://${profile.projects}`, '_blank')} className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
                 <div className="w-16 h-16 bg-[#060b13] rounded-lg border border-white/5 shadow-[0_0_20px_rgba(0,0,0,1)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform">
                   <div className="flex gap-1 w-full p-1"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span><span className="w-1.5 h-1.5 rounded-full bg-green-500"></span></div>
                   <div className="flex-1 w-full bg-[#111928] mt-1 flex flex-col gap-1 p-1">
