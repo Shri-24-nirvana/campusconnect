@@ -17,14 +17,14 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="w-[300px] h-full border-r border-[#00e6e6]/10 bg-[#060b13]/80 backdrop-blur-3xl flex flex-col pt-32 z-40">
-      <div className="flex flex-col gap-2 px-6">
+    <aside className="w-[300px] h-full border-r border-[#00e6e6]/10 bg-[#060b13]/80 backdrop-blur-3xl flex flex-col pt-24 z-40">
+      <div className="flex flex-col gap-1 px-6">
         {links.map((link) => {
           const isActive = pathname === link.path;
           return (
             <Link key={link.name} href={link.path}>
               <div
-                className={`flex items-center gap-4 px-6 py-4 rounded-xl transition-all duration-300 ${
+                className={`flex items-center gap-4 px-6 py-3 rounded-xl transition-all duration-300 ${
                   isActive 
                   ? 'bg-gradient-to-r from-[#00e6e6]/20 to-transparent border-l-4 border-[#00e6e6] text-[#00e6e6] drop-shadow-[0_0_10px_rgba(0,230,230,0.5)]' 
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
@@ -42,7 +42,7 @@ export default function Sidebar() {
             localStorage.clear();
             window.location.href = '/login';
           }}
-          className="flex items-center gap-4 px-6 py-4 rounded-xl transition-all duration-300 text-red-400/80 hover:text-red-400 hover:bg-white/5 w-full text-left"
+          className="flex items-center gap-4 px-6 py-3 rounded-xl transition-all duration-300 text-red-400/80 hover:text-red-400 hover:bg-white/5 w-full text-left"
         >
           <span className="text-xl opacity-80">🚪</span>
           <span className="font-semibold tracking-wide text-[15px]">Log Out</span>
