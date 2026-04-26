@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 export default function TopNav() {
   const [user, setUser] = useState<any>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -39,9 +40,37 @@ export default function TopNav() {
           </div>
         </div>
         
-        <div className="relative cursor-pointer">
+        <div className="relative cursor-pointer" onClick={() => setShowNotifications(!showNotifications)}>
           <span className="text-2xl text-gray-400 hover:text-white transition">🔔</span>
           <span className="absolute -top-1 -right-2 w-5 h-5 bg-[#BC13FE] rounded-full text-[11px] flex justify-center items-center font-bold text-white shadow-[0_0_10px_#BC13FE]">6</span>
+          
+          {showNotifications && (
+             <div className="absolute top-12 right-0 w-80 bg-[#0d1424]/95 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-2xl shadow-[0_0_30px_rgba(0,230,230,0.15)] flex flex-col overflow-hidden animate-fade-in z-50">
+                <div className="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-white/5">
+                   <h3 className="text-white font-bold tracking-widest text-sm uppercase">Notifications</h3>
+                   <span className="text-[#00e6e6] text-xs font-bold cursor-pointer hover:underline">Mark all read</span>
+                </div>
+                
+                <div className="flex flex-col max-h-96 overflow-y-auto css-scrollbar">
+                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
+                      <span className="text-white text-sm"><strong>Aryan Sharma</strong> accepted your connection request!</span>
+                      <span className="text-xs text-gray-500">2 minutes ago</span>
+                   </div>
+                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
+                      <span className="text-white text-sm"><strong>Tech Expo 2024</strong> is starting tomorrow! Don't forget to register.</span>
+                      <span className="text-xs text-gray-500">1 hour ago</span>
+                   </div>
+                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
+                      <span className="text-white text-sm"><strong>Priya Singh</strong> posted a new opportunity: <em>SWE Intern</em>.</span>
+                      <span className="text-xs text-gray-500">3 hours ago</span>
+                   </div>
+                   <div className="px-5 py-4 hover:bg-white/5 transition flex flex-col gap-1">
+                      <span className="text-white text-sm">Your profile hit <strong>350</strong> views this week! 🔥</span>
+                      <span className="text-xs text-gray-500">Yesterday</span>
+                   </div>
+                </div>
+             </div>
+          )}
         </div>
 
         <div className="relative w-72">
