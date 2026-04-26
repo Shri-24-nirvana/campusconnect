@@ -10,6 +10,7 @@ export default function ProfileView() {
   const [activeTab, setActiveTab] = useState(1);
   const [formData, setFormData] = useState<any>({});
   const [isSaving, setIsSaving] = useState(false);
+  const [projectList, setProjectList] = useState<string[]>(['']);
   
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -32,6 +33,9 @@ export default function ProfileView() {
             if(data) {
                 setProfile(data);
                 setFormData((prev: any) => ({ ...prev, ...data }));
+                const projStr = data.projects || '';
+                const pList = projStr.split(',').map((s: string) => s.trim()).filter(Boolean);
+                setProjectList(pList.length > 0 ? pList : ['']);
             }
         })
         .catch(() => {});
@@ -149,40 +153,50 @@ export default function ProfileView() {
           <h2 className="text-white font-bold tracking-widest text-[16px] mb-6 pl-2">Featured Projects</h2>
           
           <div className="grid grid-cols-3 gap-6">
-             {/* Dynamic from links? We'll just show placeholders or map array if we stored it */}
-             <div onClick={() => profile?.projects && window.open(profile.projects.startsWith('http') ? profile.projects : `https://${profile.projects}`, '_blank')} className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
-                <div className="w-16 h-16 bg-[#060b13] rounded-lg border border-white/5 shadow-[0_0_20px_rgba(0,0,0,1)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform">
-                  <div className="flex gap-1 w-full p-1"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span><span className="w-1.5 h-1.5 rounded-full bg-green-500"></span></div>
-                  <div className="flex-1 w-full bg-[#111928] mt-1 flex flex-col gap-1 p-1">
-                     <span className="w-full h-1 bg-gray-600 rounded"></span><span className="w-3/4 h-1 bg-[#00e6e6] rounded"></span><span className="w-1/2 h-1 bg-[#BC13FE] rounded"></span>
-                  </div>
-                </div>
-                <h3 className="text-gray-300 font-bold text-[13px] text-center">{profile?.projects || 'Main Project 1'}</h3>
-             </div>
+             {(() => {
+                const pLinks = (profile?.projects || '').split(',').map((s: string) => s.trim()).filter(Boolean);
+                const p1 = pLinks[0];
+                const p2 = pLinks[1];
+                const p3 = pLinks[2];
 
-             <div className="bg-gradient-to-b from-[#1c0828]/50 to-[#060b13] border border-[#BC13FE]/30 rounded-3xl p-6 shadow-[0_0_25px_rgba(188,19,254,0.15)] flex flex-col items-center hover:border-[#BC13FE] transition group cursor-pointer h-48 justify-center gap-4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[#BC13FE] opacity-[0.03] filter blur-xl"></div>
-                <div className="w-20 h-16 bg-[#e0e0fd] border-[3px] border-[#6b6bf9] rounded-lg shadow-[0_0_20px_rgba(107,107,249,0.5)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform relative z-10">
-                   <div className="w-full h-2 bg-[#6b6bf9]/20 rounded mb-1 flex items-center px-1"><span className="w-1 h-1 bg-[#6b6bf9] rounded-full"></span></div>
-                   <div className="w-full flex-1 bg-white rounded flex p-1 gap-1">
-                      <div className="bg-[#6b6bf9]/30 flex-1 rounded"></div>
-                      <div className="bg-[#6b6bf9]/10 flex-[2] rounded"></div>
-                   </div>
-                </div>
-                <h3 className="text-white font-bold text-[13px] relative z-10 text-center">Project 2</h3>
-             </div>
+                return (
+                  <>
+                     <div onClick={() => p1 && window.open(p1.startsWith('http') ? p1 : `https://${p1}`, '_blank')} className={`bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center transition group h-48 justify-center gap-4 ${p1 ? 'cursor-pointer hover:border-[#00e6e6]/40' : 'opacity-50'}`}>
+                        <div className="w-16 h-16 bg-[#060b13] rounded-lg border border-white/5 shadow-[0_0_20px_rgba(0,0,0,1)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform">
+                          <div className="flex gap-1 w-full p-1"><span className="w-1.5 h-1.5 rounded-full bg-red-500"></span><span className="w-1.5 h-1.5 rounded-full bg-yellow-500"></span><span className="w-1.5 h-1.5 rounded-full bg-green-500"></span></div>
+                          <div className="flex-1 w-full bg-[#111928] mt-1 flex flex-col gap-1 p-1">
+                             <span className="w-full h-1 bg-gray-600 rounded"></span><span className="w-3/4 h-1 bg-[#00e6e6] rounded"></span><span className="w-1/2 h-1 bg-[#BC13FE] rounded"></span>
+                          </div>
+                        </div>
+                        <h3 className="text-gray-300 font-bold text-[13px] text-center truncate w-full px-2">{p1 || 'Main Project 1'}</h3>
+                     </div>
 
-             <div className="bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center hover:border-[#00e6e6]/40 transition group cursor-pointer h-48 justify-center gap-4">
-                <div className="w-16 h-16 flex flex-col items-center group-hover:scale-110 transition-transform relative">
-                  <div className="w-10 h-4 rounded-[50%] bg-[#BC13FE] border-2 border-white/20 shadow-[0_0_15px_rgba(188,19,254,0.5)] absolute top-0 z-30"></div>
-                  <div className="w-6 h-10 border-r-2 border-l-2 border-white/20 absolute top-2 z-20"></div>
-                  <div className="flex gap-4 absolute top-10 w-[80px] justify-between">
-                     <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
-                     <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
-                  </div>
-                </div>
-                <h3 className="text-gray-300 font-bold text-[13px] mt-2">Project 3</h3>
-             </div>
+                     <div onClick={() => p2 && window.open(p2.startsWith('http') ? p2 : `https://${p2}`, '_blank')} className={`bg-gradient-to-b from-[#1c0828]/50 to-[#060b13] border border-[#BC13FE]/30 rounded-3xl p-6 shadow-[0_0_25px_rgba(188,19,254,0.15)] flex flex-col items-center transition group h-48 justify-center gap-4 relative overflow-hidden ${p2 ? 'cursor-pointer hover:border-[#BC13FE]' : 'opacity-50'}`}>
+                        <div className="absolute inset-0 bg-[#BC13FE] opacity-[0.03] filter blur-xl"></div>
+                        <div className="w-20 h-16 bg-[#e0e0fd] border-[3px] border-[#6b6bf9] rounded-lg shadow-[0_0_20px_rgba(107,107,249,0.5)] flex flex-col items-center p-1 group-hover:scale-110 transition-transform relative z-10">
+                           <div className="w-full h-2 bg-[#6b6bf9]/20 rounded mb-1 flex items-center px-1"><span className="w-1 h-1 bg-[#6b6bf9] rounded-full"></span></div>
+                           <div className="w-full flex-1 bg-white rounded flex p-1 gap-1">
+                              <div className="bg-[#6b6bf9]/30 flex-1 rounded"></div>
+                              <div className="bg-[#6b6bf9]/10 flex-[2] rounded"></div>
+                           </div>
+                        </div>
+                        <h3 className="text-white font-bold text-[13px] relative z-10 text-center truncate w-full px-2">{p2 || 'Project 2'}</h3>
+                     </div>
+
+                     <div onClick={() => p3 && window.open(p3.startsWith('http') ? p3 : `https://${p3}`, '_blank')} className={`bg-gradient-to-b from-[#111928] to-[#060b13] border border-white/10 rounded-3xl p-6 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex flex-col items-center transition group h-48 justify-center gap-4 ${p3 ? 'cursor-pointer hover:border-[#00e6e6]/40' : 'opacity-50'}`}>
+                        <div className="w-16 h-16 flex flex-col items-center group-hover:scale-110 transition-transform relative">
+                          <div className="w-10 h-4 rounded-[50%] bg-[#BC13FE] border-2 border-white/20 shadow-[0_0_15px_rgba(188,19,254,0.5)] absolute top-0 z-30"></div>
+                          <div className="w-6 h-10 border-r-2 border-l-2 border-white/20 absolute top-2 z-20"></div>
+                          <div className="flex gap-4 absolute top-10 w-[80px] justify-between">
+                             <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
+                             <div className="w-6 h-3 rounded-[50%] bg-[#00e6e6] border border-white/20 shadow-[0_0_10px_rgba(0,230,230,0.5)]"></div>
+                          </div>
+                        </div>
+                        <h3 className="text-gray-300 font-bold text-[13px] mt-2 truncate w-full px-2 text-center">{p3 || 'Project 3'}</h3>
+                     </div>
+                  </>
+                );
+             })()}
           </div>
         </div>
 
@@ -297,10 +311,28 @@ export default function ProfileView() {
                             <span className="text-[#E1306C] font-bold">Insta</span>
                             <input type="text" value={formData.instagram || ''} onChange={e => handleDataChange('instagram', e.target.value)} placeholder="INSTAGRAM PROFILE URL" className="flex-1 bg-transparent text-white outline-none text-xs" />
                          </div>
-                         <div className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 shadow-[inset_0_2px_5px_rgba(0,0,0,0.3)]">
-                            <span className="text-green-400 font-bold">Proj</span>
-                            <input type="text" value={formData.projects || ''} onChange={e => handleDataChange('projects', e.target.value)} placeholder="MAIN PROJECT TITLE OR URL" className="flex-1 bg-transparent text-white outline-none text-xs" />
-                         </div>
+                         {projectList.map((p, idx) => (
+                             <div key={idx} className="flex items-center gap-3 bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 shadow-[inset_0_2px_5px_rgba(0,0,0,0.3)]">
+                                <span className="text-green-400 font-bold">Proj {idx + 1}</span>
+                                <input type="text" value={p} onChange={e => {
+                                    const next = [...projectList];
+                                    next[idx] = e.target.value;
+                                    setProjectList(next);
+                                    handleDataChange('projects', next.join(', '));
+                                }} placeholder="PROJECT URL" className="flex-1 bg-transparent text-white outline-none text-xs" />
+                                {idx > 0 && <span onClick={() => {
+                                    const next = projectList.filter((_, i) => i !== idx);
+                                    setProjectList(next);
+                                    handleDataChange('projects', next.join(', '));
+                                }} className="text-red-400 cursor-pointer font-bold">✕</span>}
+                             </div>
+                         ))}
+                         
+                         {projectList.length < 3 && (
+                             <button onClick={() => setProjectList([...projectList, ''])} className="w-full flex justify-center items-center gap-2 bg-[#00e6e6]/10 border border-[#00e6e6]/30 text-[#00e6e6] rounded-xl px-4 py-3 hover:bg-[#00e6e6]/20 transition-colors font-bold tracking-widest text-xs">
+                                <span>+</span> ADD ANOTHER PROJECT
+                             </button>
+                         )}
                      </div>
                   </div>
                </div>
