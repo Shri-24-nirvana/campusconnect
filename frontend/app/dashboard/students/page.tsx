@@ -6,6 +6,7 @@ import gsap from 'gsap';
 export default function StudentsDirectoryView() {
   const [users, setUsers] = useState<any[]>([]);
   const [connectStatus, setConnectStatus] = useState<Record<string, boolean>>({});
+  const [viewingStudent, setViewingStudent] = useState<any>(null);
 
   useEffect(() => {
     gsap.fromTo(".dir-card", 
@@ -73,7 +74,7 @@ export default function StudentsDirectoryView() {
                      <span className="text-white font-bold">{['Python', 'UI/UX', 'Java', 'Web3'][i % 4]}</span>
                    </div>
                    <div className="flex gap-2 mt-4">
-                     <button className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
+                     <button onClick={() => setViewingStudent({ name: ['Aryan Sharma', 'Rohan Gupta', 'Priya Singh', 'Ananya Rai'][i % 4], branch: ['CSE', 'ME', 'ECE', 'IT'][i % 4], skill: ['Python', 'UI/UX', 'Java', 'Web3'][i % 4] })} className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
                      <button 
                          disabled={connectStatus[`mock_user_${i}`]}
                          onClick={() => handleConnect(`mock_user_${i}`)}
@@ -91,6 +92,30 @@ export default function StudentsDirectoryView() {
           </div>
 
        </div>
+       
+       {/* View Profile Modal */}
+       {viewingStudent && (
+          <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
+             <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col items-center">
+                <button onClick={() => setViewingStudent(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
+                
+                <div className="w-32 h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-full flex justify-center items-end relative overflow-hidden border-2 border-[#00e6e6]/60 mb-6 shadow-[0_0_30px_rgba(0,230,230,0.2)]">
+                   <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-4" />
+                </div>
+                
+                <h2 className="text-white text-2xl font-black tracking-widest uppercase">{viewingStudent.name}</h2>
+                <p className="text-[#00e6e6] font-mono text-sm mt-1 mb-6">({viewingStudent.branch}) • Top Skill: {viewingStudent.skill}</p>
+                
+                <div className="w-full bg-[#111928]/60 border border-white/10 rounded-xl p-6 text-gray-300 text-sm leading-relaxed mb-8 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+                   Passionate student focusing on modern technology stacks and systems engineering. Always open to connecting and building hackathon projects!
+                </div>
+                
+                <button onClick={() => setViewingStudent(null)} className="w-full bg-[#00e6e6] text-[#060b13] font-black tracking-widest px-8 py-3 rounded-xl shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors uppercase text-sm">
+                   CLOSE PROFILE
+                </button>
+             </div>
+          </div>
+       )}
     </div>
   );
 }
