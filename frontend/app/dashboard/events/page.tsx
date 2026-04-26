@@ -224,6 +224,37 @@ export default function JobsInternshipsView() {
            </div>
          </div>
        )}
+       {/* Create Opportunity Modal */}
+       {showCreateModal && (
+          <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
+             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col">
+                <button onClick={() => setShowCreateModal(false)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
+                
+                <h2 className="text-white text-xl font-bold tracking-widest uppercase mb-6">Create Opportunity</h2>
+                
+                <input type="text" placeholder="Title (e.g., Software Engineer Intern)" className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] mb-4" />
+                
+                <div className="flex gap-4 mb-4">
+                   <select className="bg-[#111928]/60 border border-white/10 text-gray-300 px-4 py-3 rounded-xl text-sm outline-none flex-1 focus:border-[#00e6e6] transition">
+                      <option>Select Type...</option>
+                      <option>INTERNSHIP</option>
+                      <option>JOB</option>
+                      <option>HACKATHON</option>
+                   </select>
+                   <input type="text" placeholder="Tag (e.g., SWE)" className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] flex-1" />
+                </div>
+                
+                <textarea placeholder="Description & Contact Info..." className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)] min-h-[120px] mb-8"></textarea>
+                
+                <div className="flex justify-end gap-3">
+                   <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-white px-6 py-2 text-sm transition font-bold tracking-widest">CANCEL</button>
+                   <button onClick={() => setShowCreateModal(false)} className="bg-[#00e6e6] text-[#060b13] px-8 py-3 rounded-xl text-sm font-black tracking-widest shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">
+                       PUBLISH POST
+                   </button>
+                </div>
+             </div>
+          </div>
+       )}
     </div>
   );
 }
