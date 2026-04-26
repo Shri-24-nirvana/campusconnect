@@ -8,6 +8,7 @@ export default function JobsInternshipsView() {
   const [activeCommentPost, setActiveCommentPost] = useState<any>(null);
   const [commentText, setCommentText] = useState('');
   const [activeEvent, setActiveEvent] = useState<any>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [interactions, setInteractions] = useState<Record<string, { liked: boolean, saved: boolean }>>({});
 
   useEffect(() => {
@@ -93,7 +94,7 @@ export default function JobsInternshipsView() {
           <h1 className="text-white text-xl font-bold tracking-widest uppercase flex items-center gap-4">
              JOBS & INTERNSHIPS
           </h1>
-          <button className="bg-transparent border-2 border-[#00e6e6] text-[#00e6e6] font-bold tracking-widest px-8 py-3 rounded-xl shadow-[0_0_20px_rgba(0,230,230,0.3)] hover:bg-[#00e6e6] hover:text-[#060b13] transition-colors cursor-pointer">
+          <button onClick={() => setShowCreateModal(true)} className="bg-transparent border-2 border-[#00e6e6] text-[#00e6e6] font-bold tracking-widest px-8 py-3 rounded-xl shadow-[0_0_20px_rgba(0,230,230,0.3)] hover:bg-[#00e6e6] hover:text-[#060b13] transition-colors cursor-pointer">
              CREATE OPPORTUNITY
           </button>
        </div>
