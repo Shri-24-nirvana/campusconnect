@@ -10,6 +10,15 @@ export default function TeamsView() {
   const [activeEvent, setActiveEvent] = useState<any>(null);
   const [teamNameInput, setTeamNameInput] = useState('');
   const [myTeams, setMyTeams] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
+
+  const mockConnections = [
+      { id: 'u1', name: 'Rohan Rai', branch: 'CSE' },
+      { id: 'u2', name: 'Priya Singh', branch: 'ECE' },
+      { id: 'u3', name: 'Ananya Sharma', branch: 'IT' },
+      { id: 'u4', name: 'Karan Patel', branch: 'ME' }
+  ];
 
   const upcomingEvents = [
     { id: 'ev1', name: "CODEFEST '24", date: 'May 15', type: 'Hackathon', desc: '48-hour global hackathon. Build the future of web tech.' },
@@ -54,11 +63,13 @@ export default function TeamsView() {
          id: Math.random().toString(),
          name: teamNameInput,
          event: activeEvent?.name || 'Unknown Event',
-         members: 1
+         members: 1 + invitedMembers.length
       };
       setMyTeams(prev => [...prev, newTeam]);
       setShowModal(false);
       setTeamNameInput('');
+      setInvitedMembers([]);
+      setSearchQuery('');
   };
 
   return (
@@ -230,26 +241,45 @@ export default function TeamsView() {
 
               <div>
                 <label className="text-xs text-gray-400 uppercase tracking-wider block mb-2">Step 2: Member Invite</label>
-                <div className="w-full bg-[#111928]/60 border border-[#00e6e6]/30 rounded-xl px-4 py-3 flex flex-col gap-4 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
-                   <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                      <span className="text-sm text-gray-300">Invite from Connections</span>
-                      <span className="text-[#00e6e6] text-xs">Search 🔍</span>
+                <div className="w-full bg-[#111928]/60 border border-[#00e6e6]/30 rounded-xl p-4 flex flex-col gap-4 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+                   
+                   <div className="relative">
+                      <input 
+                         type="text" 
+                         placeholder="Search connections to invite..." 
+                         value={searchQuery}
+                         onChange={(e) => setSearchQuery(e.target.value)}
+                         className="w-full bg-[#060b13]/80 border border-white/10 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-[#00e6e6] transition shadow-[inset_0_2px_5px_rgba(0,0,0,0.3)]"
+                      />
+                      <span className="absolute right-4 top-3 text-gray-500">🔍</span>
                    </div>
                    
-                   <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-full overflow-hidden bg-[#060b13] border border-white/20"><img src="/avatar_1.png" className="w-full h-full object-cover scale-150" /></div>
-                         <span className="text-sm text-white font-bold">Rohan Raii</span>
-                      </div>
-                      <button className="bg-[#00e6e6]/20 border border-[#00e6e6]/50 text-[#00e6e6] font-bold text-[10px] px-4 py-1.5 rounded shadow-[0_0_10px_rgba(0,230,230,0.2)] hover:bg-[#00e6e6] hover:text-black transition-colors uppercase tracking-wider">Add</button>
-                   </div>
-                   
-                   <div className="flex items-center justify-between opacity-50">
-                      <div className="flex items-center gap-3">
-                         <div className="w-8 h-8 rounded-full overflow-hidden bg-[#060b13] border border-white/20"><img src="/avatar_1.png" className="w-full h-full object-cover scale-150" /></div>
-                         <span className="text-sm text-white font-bold">Priya Singh</span>
-                      </div>
-                      <button className="bg-transparent border border-white/20 text-gray-400 font-bold text-[10px] px-4 py-1.5 rounded uppercase tracking-wider">Added ✓</button>
+                   <div className="flex flex-col gap-2 max-h-36 overflow-y-auto css-scrollbar pr-2 mt-2">
+                      {mockConnections.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map(conn => {
+                          const isAdded = invitedMembers.includes(conn.id);
+                          return (
+                             <div key={conn.id} className={`flex items-center justify-between p-2 rounded-lg transition-colors border ${isAdded ? 'bg-[#00e6e6]/5 border-[#00e6e6]/20' : 'bg-[#111928]/40 border-white/5 hover:border-white/20'}`}>
+                                <div className="flex items-center gap-3">
+                                   <div className="w-8 h-8 rounded-full overflow-hidden bg-[#060b13] border border-white/20">
+                                      <img src="/avatar_1.png" className="w-full h-full object-cover scale-150" />
+                                   </div>
+                                   <div className="flex flex-col">
+                                      <span className="text-sm text-white font-bold leading-tight">{conn.name}</span>
+                                      <span className="text-[10px] text-gray-500 font-mono">{conn.branch}</span>
+                                   </div>
+                                </div>
+                                
+                                {isAdded ? (
+                                   <button onClick={() => setInvitedMembers(invitedMembers.filter(id => id !== conn.id))} className="bg-transparent border border-[#00e6e6]/50 text-[#00e6e6] font-bold text-[10px] px-3 py-1.5 rounded uppercase tracking-wider hover:bg-[#00e6e6]/10 transition-colors">Added ✓</button>
+                                ) : (
+                                   <button onClick={() => setInvitedMembers([...invitedMembers, conn.id])} className="bg-[#00e6e6]/20 border border-[#00e6e6]/50 text-[#00e6e6] font-bold text-[10px] px-4 py-1.5 rounded shadow-[0_0_10px_rgba(0,230,230,0.2)] hover:bg-[#00e6e6] hover:text-black transition-colors uppercase tracking-wider">Add</button>
+                                )}
+                             </div>
+                          );
+                      })}
+                      {mockConnections.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                          <div className="text-center text-xs text-gray-500 py-4">No connections found matching "{searchQuery}"</div>
+                      )}
                    </div>
                 </div>
               </div>
