@@ -35,12 +35,29 @@ export default function TeamsView() {
 
     const token = localStorage.getItem('access_token');
     if (token) {
+       // Fetch My Teams
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams`, {
+          headers: { Authorization: `Bearer ${token}` }
+       })
+       .then(res => res.json())
+       .then(data => {
+           if (Array.isArray(data)) {
+               setMyTeams(data.map((t: any) => ({
+                   id: t.id,
+                   name: t.name,
+                   event: t.targetEvent,
+                   members: t.members?.length || 1
+               })));
+           }
+       }).catch(() => {});
+
+       // Fetch Global Teams
        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
        .then(data => {
-           // Mapping mock data logic
+           // Mapping mock data logic for global feed
        }).catch(() => {});
     }
   }, []);
@@ -58,19 +75,40 @@ export default function TeamsView() {
       }
   };
 
-  const handleRegisterTeam = () => {
+  const handleRegisterTeam = async () => {
       if(!teamNameInput) return;
-      const newTeam = {
-         id: Math.random().toString(),
-         name: teamNameInput,
-         event: activeEvent?.name || 'Unknown Event',
-         members: 1 + invitedMembers.length
-      };
-      setMyTeams(prev => [...prev, newTeam]);
-      setShowModal(false);
-      setTeamNameInput('');
-      setInvitedMembers([]);
-      setSearchQuery('');
+      const token = localStorage.getItem('access_token');
+      try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams`, {
+              method: 'POST',
+              headers: { 
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}` 
+              },
+              body: JSON.stringify({
+                  name: teamNameInput,
+                  targetEvent: activeEvent?.name || 'Unknown Event',
+                  description: '',
+                  invitedMemberIds: invitedMembers
+              })
+          });
+          if (!res.ok) throw new Error('Failed to create team');
+          const data = await res.json();
+          
+          const newTeam = {
+             id: data.id,
+             name: data.name,
+             event: data.targetEvent,
+             members: 1 + invitedMembers.length
+          };
+          setMyTeams(prev => [newTeam, ...prev]);
+          setShowModal(false);
+          setTeamNameInput('');
+          setInvitedMembers([]);
+          setSearchQuery('');
+      } catch (e) {
+          console.error(e);
+      }
   };
 
   return (
@@ -334,9 +372,18 @@ export default function TeamsView() {
                 <button onClick={() => setManagingTeam(null)} className="flex-1 border border-white/10 text-white font-bold text-xs py-3 rounded-xl hover:bg-white/5 transition-colors tracking-widest uppercase">
                   Close
                 </button>
-                <button onClick={() => {
-                   setMyTeams(prev => prev.filter(t => t.id !== managingTeam.id));
-                   setManagingTeam(null);
+                <button onClick={async () => {
+                   try {
+                       const token = localStorage.getItem('access_token');
+                       await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/${managingTeam.id}`, {
+                           method: 'DELETE',
+                           headers: { Authorization: `Bearer ${token}` }
+                       });
+                       setMyTeams(prev => prev.filter(t => t.id !== managingTeam.id));
+                       setManagingTeam(null);
+                   } catch (e) {
+                       console.error(e);
+                   }
                 }} className="flex-1 bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-xs py-3 rounded-xl hover:bg-red-500 hover:text-white transition-colors tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                   Disband Team
                 </button>

@@ -6,17 +6,56 @@ export class TeamService {
   constructor(private prisma: PrismaService) {}
 
   async createTeam(userId: string, data: any) {
-    const { targetEvent, description } = data;
-    return this.prisma.team.create({
+    const { name, targetEvent, description, invitedMemberIds = [] } = data;
+    
+    // Create the team and leader
+    const team = await this.prisma.team.create({
       data: {
+        name: name || "Unnamed Team",
         createdById: userId,
         targetEvent,
-        description,
+        description: description || "",
         members: {
           create: [{ userId, role: 'LEADER', status: 'ACCEPTED' }]
         }
       }
     });
+
+    // Add invited members
+    if (invitedMemberIds.length > 0) {
+       const invites = invitedMemberIds.map((id: string) => ({
+           teamId: team.id,
+           userId: id,
+           role: 'MEMBER',
+           status: 'PENDING'
+       }));
+       await this.prisma.teamMember.createMany({ data: invites }).catch(() => {});
+    }
+
+    return team;
+  }
+
+  async getMyTeams(userId: string) {
+    return this.prisma.team.findMany({
+      where: {
+        members: {
+          some: { userId }
+        }
+      },
+      include: {
+        members: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  async deleteTeam(userId: string, teamId: string) {
+      // Ensure user is the leader/creator
+      const team = await this.prisma.team.findUnique({ where: { id: teamId } });
+      if (team && team.createdById === userId) {
+         return this.prisma.team.delete({ where: { id: teamId } });
+      }
+      throw new Error("Unauthorized or team not found");
   }
 
   async getAllTeams() {

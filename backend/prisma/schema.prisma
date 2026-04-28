@@ -67,6 +67,7 @@ model Post {
 
 model Team {
   id          String       @id @default(uuid())
+  name        String       @default("Unnamed Team")
   createdById String
   createdBy   User         @relation("CreatedTeams", fields: [createdById], references: [id])
   targetEvent String
