@@ -12,6 +12,7 @@ export default function TeamsView() {
   const [myTeams, setMyTeams] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
+  const [managingTeam, setManagingTeam] = useState<any>(null);
 
   const mockConnections = [
       { id: 'u1', name: 'Rohan Rai', branch: 'CSE' },
@@ -96,7 +97,7 @@ export default function TeamsView() {
                      <p className="text-[10px] text-[#00e6e6] font-mono mb-5 uppercase tracking-wider bg-[#00e6e6]/10 w-fit px-2 py-0.5 rounded border border-[#00e6e6]/20">{t.event}</p>
                      <div className="flex justify-between items-center mt-2">
                          <span className="text-[11px] text-gray-500">Members <span className="text-white font-bold">{t.members}/4</span></span>
-                         <button className="py-1.5 px-4 bg-[#00e6e6] text-[#060b13] rounded text-[10px] font-bold shadow-[0_0_15px_rgba(0,230,230,0.4)]">Manage</button>
+                         <button onClick={() => setManagingTeam(t)} className="py-1.5 px-4 bg-[#00e6e6] text-[#060b13] rounded text-[10px] font-bold shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">Manage</button>
                      </div>
                   </div>
                ))}
@@ -301,6 +302,45 @@ export default function TeamsView() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TEAM MANAGEMENT MODAL */}
+      {managingTeam && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/60 p-4">
+          <div className="w-[450px] bg-[#0d1424]/95 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-[2rem] p-8 shadow-[0_0_50px_rgba(0,230,230,0.2)] relative animate-fade-in flex flex-col items-center">
+             <button onClick={() => setManagingTeam(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
+             
+             <div className="w-20 h-20 bg-gradient-to-t from-[#111928] to-transparent border border-white/10 rounded-[1.5rem] flex justify-center items-end relative overflow-hidden mb-6 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                 <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-2 opacity-70" />
+             </div>
+             
+             <h2 className="text-white text-2xl font-black tracking-widest uppercase mb-1">{managingTeam.name}</h2>
+             <span className="bg-[#00e6e6]/10 text-[#00e6e6] border border-[#00e6e6]/30 px-3 py-1 rounded text-xs font-mono uppercase tracking-widest mb-8">{managingTeam.event}</span>
+             
+             <div className="w-full bg-[#111928]/60 border border-white/5 rounded-xl p-5 mb-8 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+                <div className="flex justify-between items-center border-b border-white/5 pb-3 mb-3">
+                   <span className="text-sm text-gray-400">Team Status</span>
+                   <span className="text-[#00e6e6] text-xs font-bold px-2 py-0.5 bg-[#00e6e6]/10 rounded">Active</span>
+                </div>
+                <div className="flex justify-between items-center">
+                   <span className="text-sm text-gray-400">Total Members</span>
+                   <span className="text-white text-sm font-bold">{managingTeam.members} / 4</span>
+                </div>
+             </div>
+             
+             <div className="w-full flex gap-3">
+                <button onClick={() => setManagingTeam(null)} className="flex-1 border border-white/10 text-white font-bold text-xs py-3 rounded-xl hover:bg-white/5 transition-colors tracking-widest uppercase">
+                  Close
+                </button>
+                <button onClick={() => {
+                   setMyTeams(prev => prev.filter(t => t.id !== managingTeam.id));
+                   setManagingTeam(null);
+                }} className="flex-1 bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-xs py-3 rounded-xl hover:bg-red-500 hover:text-white transition-colors tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                  Disband Team
+                </button>
+             </div>
           </div>
         </div>
       )}
