@@ -6,8 +6,10 @@ import { ConnectionService } from './connection.service';
 import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 
+import { UsersController } from './users.controller';
+
 @Module({
-  controllers: [ConnectionController, MessageController],
+  controllers: [UsersController, ConnectionController, MessageController],
   providers: [UsersService, PrismaService, ConnectionService, MessageService],
   exports: [UsersService],
 })

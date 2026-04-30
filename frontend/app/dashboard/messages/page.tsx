@@ -111,23 +111,6 @@ export default function MessagesView() {
                 </div>
             ))}
 
-            {/* Fallback mock UI for visual if empty (as requested) */}
-            {contacts.length === 0 && (
-              <div 
-                 onClick={() => setActivePartner({ id: 'mock_partner', name: 'Aanya Agrawal' })} 
-                 className={`flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-colors mt-auto ${activePartner?.id === 'mock_partner' ? 'bg-gradient-to-r from-[#00e6e6]/20 to-transparent border border-[#00e6e6]/30' : 'hover:bg-white/5 opacity-50'}`}>
-                <div className="w-12 h-12 flex-shrink-0 relative">
-                  <div className="w-full h-full rounded-full border border-white/20 bg-[#111928] overflow-hidden"><img src="/avatar_1.png" className="w-full h-full object-cover scale-150 top-1 relative opacity-70" /></div>
-                </div>
-                <div className="flex-1 border-b border-white/5 pb-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <h4 className={`text-[14px] font-bold ${activePartner?.id === 'mock_partner' ? 'text-white' : 'text-gray-300'}`}>Aanya Agrawal (MOCK)</h4>
-                    <span className="text-[9px] text-gray-500 font-mono">Offline</span>
-                  </div>
-                  <div className="flex justify-end"><div className="w-2 h-2 rounded-full bg-red-500"></div></div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

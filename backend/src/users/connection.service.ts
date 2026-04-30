@@ -26,4 +26,17 @@ export class ConnectionService {
       }
     });
   }
+
+  async acceptRequest(userId: string, connectionId: string) {
+      return this.prisma.connection.updateMany({
+          where: {
+              id: connectionId,
+              receiverId: userId,
+              status: 'PENDING'
+          },
+          data: {
+              status: 'ACCEPTED'
+          }
+      });
+  }
 }

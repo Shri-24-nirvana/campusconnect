@@ -6,11 +6,42 @@ import Image from 'next/image';
 export default function TopNav() {
   const [user, setUser] = useState<any>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  const fetchConnections = async (userId: string) => {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+      try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
+              headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+              const data = await res.json();
+              const pendingIncoming = data.filter((conn: any) => conn.status === 'PENDING' && conn.receiverId === userId);
+              setNotifications(pendingIncoming);
+          }
+      } catch(e) {}
+  };
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
-    if (userStr) setUser(JSON.parse(userStr));
+    if (userStr) {
+        const u = JSON.parse(userStr);
+        setUser(u);
+        fetchConnections(u.id);
+        const interval = setInterval(() => fetchConnections(u.id), 5000);
+        return () => clearInterval(interval);
+    }
   }, []);
+
+  const handleAccept = async (connId: string) => {
+      const token = localStorage.getItem('access_token');
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections/${connId}/accept`, {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${token}` }
+      });
+      setNotifications(prev => prev.filter(n => n.id !== connId));
+  };
 
   return (
     <nav className="h-28 w-full flex justify-between items-center px-12 absolute top-0 left-0 z-50 pointer-events-none">
@@ -40,9 +71,11 @@ export default function TopNav() {
           </div>
         </div>
         
-        <div className="relative cursor-pointer" onClick={() => setShowNotifications(!showNotifications)}>
-          <span className="text-2xl text-gray-400 hover:text-white transition">🔔</span>
-          <span className="absolute -top-1 -right-2 w-5 h-5 bg-[#BC13FE] rounded-full text-[11px] flex justify-center items-center font-bold text-white shadow-[0_0_10px_#BC13FE]">6</span>
+        <div className="relative">
+          <div className="cursor-pointer" onClick={() => setShowNotifications(!showNotifications)}>
+             <span className="text-2xl text-gray-400 hover:text-white transition">🔔</span>
+             {notifications.length > 0 && <span className="absolute -top-1 -right-2 w-5 h-5 bg-[#BC13FE] rounded-full text-[11px] flex justify-center items-center font-bold text-white shadow-[0_0_10px_#BC13FE]">{notifications.length}</span>}
+          </div>
           
           {showNotifications && (
              <div className="absolute top-12 right-0 w-80 bg-[#0d1424]/95 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-2xl shadow-[0_0_30px_rgba(0,230,230,0.15)] flex flex-col overflow-hidden animate-fade-in z-50">
@@ -52,22 +85,16 @@ export default function TopNav() {
                 </div>
                 
                 <div className="flex flex-col max-h-96 overflow-y-auto css-scrollbar">
-                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
-                      <span className="text-white text-sm"><strong>Aryan Sharma</strong> accepted your connection request!</span>
-                      <span className="text-xs text-gray-500">2 minutes ago</span>
-                   </div>
-                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
-                      <span className="text-white text-sm"><strong>Tech Expo 2024</strong> is starting tomorrow! Don't forget to register.</span>
-                      <span className="text-xs text-gray-500">1 hour ago</span>
-                   </div>
-                   <div className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-1">
-                      <span className="text-white text-sm"><strong>Priya Singh</strong> posted a new opportunity: <em>SWE Intern</em>.</span>
-                      <span className="text-xs text-gray-500">3 hours ago</span>
-                   </div>
-                   <div className="px-5 py-4 hover:bg-white/5 transition flex flex-col gap-1">
-                      <span className="text-white text-sm">Your profile hit <strong>350</strong> views this week! 🔥</span>
-                      <span className="text-xs text-gray-500">Yesterday</span>
-                   </div>
+                   {notifications.length === 0 && <div className="p-6 text-center text-gray-500 text-xs font-bold uppercase tracking-widest">No New Notifications</div>}
+                   {notifications.map((notif: any) => (
+                       <div key={notif.id} className="px-5 py-4 border-b border-white/5 hover:bg-white/5 transition flex flex-col gap-2">
+                          <span className="text-white text-sm"><strong>{notif.sender.name}</strong> sent you a connection request!</span>
+                          <div className="flex gap-2 mt-1">
+                             <button onClick={() => handleAccept(notif.id)} className="bg-[#00e6e6] text-[#060b13] px-4 py-1.5 rounded font-bold text-xs shadow-[0_0_10px_rgba(0,230,230,0.3)] hover:bg-white transition-colors">Accept</button>
+                             <button onClick={() => setNotifications(prev => prev.filter(n => n.id !== notif.id))} className="border border-white/20 text-gray-300 px-4 py-1.5 rounded font-bold text-xs hover:bg-white/10 transition-colors">Ignore</button>
+                          </div>
+                       </div>
+                   ))}
                 </div>
              </div>
           )}

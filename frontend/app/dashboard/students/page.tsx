@@ -16,6 +16,14 @@ export default function StudentsDirectoryView() {
 
     const token = localStorage.getItem('access_token');
     if (token) {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data)) setUsers(data);
+        }).catch(err => console.error(err));
+
         fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
             headers: { Authorization: `Bearer ${token}` }
         })
@@ -24,9 +32,9 @@ export default function StudentsDirectoryView() {
             if (Array.isArray(data)) {
                 const map: Record<string, boolean> = {};
                 data.forEach(conn => {
-                   if (conn.status === 'PENDING') {
-                       map[conn.receiverId] = true;
-                   }
+                   // Mark as pending or accepted to disable connect button
+                   map[conn.receiverId] = true;
+                   map[conn.senderId] = true;
                 });
                 setConnectStatus(map);
             }
@@ -62,29 +70,29 @@ export default function StudentsDirectoryView() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
              {/* Card Array generation */}
-             {[...Array(15)].map((_, i) => (
-                <div key={i} className="dir-card bg-[#060b13]/60 border border-white/5 hover:border-[#00e6e6]/50 transition-colors rounded-[2rem] p-4 flex flex-col shadow-[0_0_25px_rgba(0,0,0,0.5)] relative cursor-pointer group">
+             {users.map((userObj) => (
+                <div key={userObj.id} className="dir-card bg-[#060b13]/60 border border-white/5 hover:border-[#00e6e6]/50 transition-colors rounded-[2rem] p-4 flex flex-col shadow-[0_0_25px_rgba(0,0,0,0.5)] relative cursor-pointer group">
                    <div className="absolute top-5 right-5 w-2 h-2 rounded-full bg-[#00e6e6] shadow-[0_0_8px_#00e6e6] z-20"></div>
                    <div className="w-full h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-[1.5rem] flex justify-center items-end relative overflow-hidden border border-white/5 mb-3">
                      <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
                    </div>
-                   <h3 className="text-[14px] font-bold text-center text-white group-hover:text-[#00e6e6] transition-colors">{['Aryan Sharma', 'Rohan Gupta', 'Priya Singh', 'Ananya Rai'][i % 4]}</h3>
+                   <h3 className="text-[14px] font-bold text-center text-white group-hover:text-[#00e6e6] transition-colors">{userObj.name}</h3>
                    <div className="flex justify-between items-center text-[11px] text-gray-400 mt-2 px-2 pb-3 border-b border-white/5">
-                     <span className="font-mono">{['CSE', 'ME', 'ECE', 'IT'][i % 4]}</span>
-                     <span className="text-white font-bold">{['Python', 'UI/UX', 'Java', 'Web3'][i % 4]}</span>
+                     <span className="font-mono">{userObj.profile?.branch || 'UNKNOWN'}</span>
+                     <span className="text-white font-bold">{(userObj.profile?.skills && userObj.profile.skills[0]) || 'Student'}</span>
                    </div>
                    <div className="flex gap-2 mt-4">
-                     <button onClick={() => setViewingStudent({ name: ['Aryan Sharma', 'Rohan Gupta', 'Priya Singh', 'Ananya Rai'][i % 4], branch: ['CSE', 'ME', 'ECE', 'IT'][i % 4], skill: ['Python', 'UI/UX', 'Java', 'Web3'][i % 4] })} className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
+                     <button onClick={() => setViewingStudent(userObj)} className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
                      <button 
-                         disabled={connectStatus[`mock_user_${i}`]}
-                         onClick={() => handleConnect(`mock_user_${i}`)}
+                         disabled={connectStatus[userObj.id]}
+                         onClick={() => handleConnect(userObj.id)}
                          className={`flex-1 py-1.5 rounded-md border text-[9px] font-black tracking-wider transition shadow-[0_0_10px_rgba(0,230,230,0.2)] ${
-                             connectStatus[`mock_user_${i}`]
+                             connectStatus[userObj.id]
                              ? "bg-purple-500/20 text-purple-400 border-purple-500/50 cursor-not-allowed"
                              : "bg-transparent border-[#00e6e6] text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]"
                          }`}
                      >
-                         {connectStatus[`mock_user_${i}`] ? "PENDING..." : "CONNECT"}
+                         {connectStatus[userObj.id] ? "CONNECTED" : "CONNECT"}
                      </button>
                    </div>
                 </div>
@@ -104,10 +112,10 @@ export default function StudentsDirectoryView() {
                 </div>
                 
                 <h2 className="text-white text-2xl font-black tracking-widest uppercase">{viewingStudent.name}</h2>
-                <p className="text-[#00e6e6] font-mono text-sm mt-1 mb-6">({viewingStudent.branch}) • Top Skill: {viewingStudent.skill}</p>
+                <p className="text-[#00e6e6] font-mono text-sm mt-1 mb-6">({viewingStudent.profile?.branch || 'N/A'}) • Top Skill: {(viewingStudent.profile?.skills && viewingStudent.profile.skills[0]) || 'N/A'}</p>
                 
                 <div className="w-full bg-[#111928]/60 border border-white/10 rounded-xl p-6 text-gray-300 text-sm leading-relaxed mb-8 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
-                   Passionate student focusing on modern technology stacks and systems engineering. Always open to connecting and building hackathon projects!
+                   {viewingStudent.profile?.bio || viewingStudent.profile?.achievements || "This student hasn't added a bio yet."}
                 </div>
                 
                 <button onClick={() => setViewingStudent(null)} className="w-full bg-[#00e6e6] text-[#060b13] font-black tracking-widest px-8 py-3 rounded-xl shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors uppercase text-sm">

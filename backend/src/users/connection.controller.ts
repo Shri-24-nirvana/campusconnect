@@ -1,4 +1,4 @@
-import { Controller, Post, Param, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, Put, Param, UseGuards, Request, Get } from '@nestjs/common';
 import { ConnectionService } from './connection.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -16,5 +16,11 @@ export class ConnectionController {
   @Get()
   async getMyConnections(@Request() req: any) {
     return this.connectionService.getConnections(req.user.id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put(':connectionId/accept')
+  async acceptConnection(@Request() req: any, @Param('connectionId') connectionId: string) {
+    return this.connectionService.acceptRequest(req.user.id, connectionId);
   }
 }
