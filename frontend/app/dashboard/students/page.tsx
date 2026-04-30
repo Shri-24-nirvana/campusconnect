@@ -5,7 +5,7 @@ import gsap from 'gsap';
 
 export default function StudentsDirectoryView() {
   const [users, setUsers] = useState<any[]>([]);
-  const [connectStatus, setConnectStatus] = useState<Record<string, boolean>>({});
+  const [connectStatus, setConnectStatus] = useState<Record<string, string>>({});
   const [viewingStudent, setViewingStudent] = useState<any>(null);
 
   useEffect(() => {
@@ -24,17 +24,19 @@ export default function StudentsDirectoryView() {
             if (Array.isArray(data)) setUsers(data);
         }).catch(err => console.error(err));
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data)) {
-                const map: Record<string, boolean> = {};
+                const map: Record<string, string> = {};
+                const uStr = localStorage.getItem('user');
+                const myId = uStr ? JSON.parse(uStr).id : '';
+
                 data.forEach(conn => {
-                   // Mark as pending or accepted to disable connect button
-                   map[conn.receiverId] = true;
-                   map[conn.senderId] = true;
+                   const partnerId = conn.senderId === myId ? conn.receiverId : conn.senderId;
+                   map[partnerId] = conn.status;
                 });
                 setConnectStatus(map);
             }
@@ -44,7 +46,7 @@ export default function StudentsDirectoryView() {
   }, []);
 
   const handleConnect = async (targetId: string) => {
-      setConnectStatus(prev => ({ ...prev, [targetId]: true }));
+      setConnectStatus(prev => ({ ...prev, [targetId]: 'PENDING' }));
       try {
           const token = localStorage.getItem('access_token');
           await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections/${targetId}`, {
@@ -52,7 +54,11 @@ export default function StudentsDirectoryView() {
               headers: { Authorization: `Bearer ${token}` }
           });
       } catch (err) {
-          setConnectStatus(prev => ({ ...prev, [targetId]: false }));
+          setConnectStatus(prev => {
+              const newMap = { ...prev };
+              delete newMap[targetId];
+              return newMap;
+          });
       }
   };
 
@@ -84,15 +90,17 @@ export default function StudentsDirectoryView() {
                    <div className="flex gap-2 mt-4">
                      <button onClick={() => setViewingStudent(userObj)} className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
                      <button 
-                         disabled={connectStatus[userObj.id]}
+                         disabled={!!connectStatus[userObj.id]}
                          onClick={() => handleConnect(userObj.id)}
                          className={`flex-1 py-1.5 rounded-md border text-[9px] font-black tracking-wider transition shadow-[0_0_10px_rgba(0,230,230,0.2)] ${
-                             connectStatus[userObj.id]
+                             connectStatus[userObj.id] === 'ACCEPTED'
+                             ? "bg-[#00e6e6]/20 text-[#00e6e6] border-[#00e6e6]/50 cursor-not-allowed"
+                             : connectStatus[userObj.id] === 'PENDING'
                              ? "bg-purple-500/20 text-purple-400 border-purple-500/50 cursor-not-allowed"
                              : "bg-transparent border-[#00e6e6] text-[#00e6e6] hover:bg-[#00e6e6] hover:text-[#060b13]"
                          }`}
                      >
-                         {connectStatus[userObj.id] ? "CONNECTED" : "CONNECT"}
+                         {connectStatus[userObj.id] === 'ACCEPTED' ? "CONNECTED" : connectStatus[userObj.id] === 'PENDING' ? "PENDING..." : "CONNECT"}
                      </button>
                    </div>
                 </div>

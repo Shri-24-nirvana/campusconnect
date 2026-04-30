@@ -12,7 +12,7 @@ export default function TopNav() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
       try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, {
               headers: { Authorization: `Bearer ${token}` }
           });
           if (res.ok) {
