@@ -15,7 +15,7 @@ export class ProfileService {
   }
 
   async updateProfile(userId: string, data: any) {
-    const { bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl } = data;
+    const { name, bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl } = data;
     
     // Convert string array to Prisma String[] format if passed as a comma-separated string from UI inputs
     let skillsArray = data.skills;
@@ -28,10 +28,18 @@ export class ProfileService {
         skills: skillsArray 
     };
 
+    if (name) {
+       await this.prisma.user.update({
+          where: { id: userId },
+          data: { name }
+       });
+    }
+
     return this.prisma.profile.upsert({
       where: { userId },
       update: payload,
-      create: { userId, ...payload }
+      create: { userId, ...payload },
+      include: { user: { select: { name: true, email: true, role: true } } }
     });
   }
 }

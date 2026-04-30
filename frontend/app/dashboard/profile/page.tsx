@@ -32,7 +32,12 @@ export default function ProfileView() {
         .then(data => {
             if(data) {
                 setProfile(data);
-                setFormData((prev: any) => ({ ...prev, ...data }));
+                setFormData((prev: any) => ({ ...prev, ...data, name: data.user?.name || prev.name }));
+                if (data.user?.name) {
+                    setUser((prev: any) => ({ ...prev, name: data.user.name }));
+                    const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
+                    localStorage.setItem('user', JSON.stringify({ ...lsUser, name: data.user.name }));
+                }
                 const projStr = data.projects || '';
                 const pList = projStr.split(',').map((s: string) => s.trim()).filter(Boolean);
                 setProjectList(pList.length > 0 ? pList : ['']);
@@ -60,6 +65,11 @@ export default function ProfileView() {
         if(updatedReq.ok) {
             const upData = await updatedReq.json();
             setProfile(upData);
+            if (upData.user?.name) {
+                setUser((prev: any) => ({ ...prev, name: upData.user.name }));
+                const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
+                localStorage.setItem('user', JSON.stringify({ ...lsUser, name: upData.user.name }));
+            }
         }
         setShowEditModal(false);
     } catch(err) {
