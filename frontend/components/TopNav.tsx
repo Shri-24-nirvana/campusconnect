@@ -67,7 +67,7 @@ export default function TopNav() {
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-white text-lg tracking-wider uppercase">{user ? user.name : 'Unknown User'}</span>
-            <span className="text-[#00e6e6] text-sm font-mono mt-1">(CSE, 2026)</span>
+            <span className="text-[#00e6e6] text-sm font-mono mt-1">({user?.branch || 'CSE'}, {user?.year || '2026'})</span>
           </div>
         </div>
         

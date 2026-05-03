@@ -35,7 +35,7 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload),
-      user: { id: user.id, email: user.email, name: user.name, role: user.role }
+      user: { id: user.id, email: user.email, name: user.name, role: user.role, branch: 'CSE', year: '2026' }
     };
   }
 
@@ -55,7 +55,15 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload),
-      user: { id: user.id, email: user.email, name: user.name, role: user.role, avatarUrl: user.profile?.avatarUrl }
+      user: { 
+          id: user.id, 
+          email: user.email, 
+          name: user.name, 
+          role: user.role, 
+          avatarUrl: user.profile?.avatarUrl,
+          branch: user.profile?.branch,
+          year: user.profile?.year
+      }
     };
   }
 }

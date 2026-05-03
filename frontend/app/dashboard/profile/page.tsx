@@ -33,10 +33,10 @@ export default function ProfileView() {
             if(data) {
                 setProfile(data);
                 setFormData((prev: any) => ({ ...prev, ...data, name: data.user?.name || prev.name }));
-                if (data.user?.name || data.avatarUrl) {
-                    setUser((prev: any) => ({ ...prev, name: data.user?.name || prev.name, avatarUrl: data.avatarUrl }));
+                if (data.user?.name || data.avatarUrl || data.branch || data.year) {
+                    setUser((prev: any) => ({ ...prev, name: data.user?.name || prev.name, avatarUrl: data.avatarUrl, branch: data.branch, year: data.year }));
                     const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
-                    localStorage.setItem('user', JSON.stringify({ ...lsUser, name: data.user?.name || lsUser.name, avatarUrl: data.avatarUrl }));
+                    localStorage.setItem('user', JSON.stringify({ ...lsUser, name: data.user?.name || lsUser.name, avatarUrl: data.avatarUrl, branch: data.branch, year: data.year }));
                 }
                 const projStr = data.projects || '';
                 const pList = projStr.split(',').map((s: string) => s.trim()).filter(Boolean);
@@ -65,10 +65,10 @@ export default function ProfileView() {
         if(updatedReq.ok) {
             const upData = await updatedReq.json();
             setProfile(upData);
-            if (upData.user?.name || upData.avatarUrl) {
-                setUser((prev: any) => ({ ...prev, name: upData.user?.name || prev.name, avatarUrl: upData.avatarUrl }));
+            if (upData.user?.name || upData.avatarUrl || upData.branch || upData.year) {
+                setUser((prev: any) => ({ ...prev, name: upData.user?.name || prev.name, avatarUrl: upData.avatarUrl, branch: upData.branch, year: upData.year }));
                 const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
-                localStorage.setItem('user', JSON.stringify({ ...lsUser, name: upData.user?.name || lsUser.name, avatarUrl: upData.avatarUrl }));
+                localStorage.setItem('user', JSON.stringify({ ...lsUser, name: upData.user?.name || lsUser.name, avatarUrl: upData.avatarUrl, branch: upData.branch, year: upData.year }));
             }
         }
         setShowEditModal(false);
