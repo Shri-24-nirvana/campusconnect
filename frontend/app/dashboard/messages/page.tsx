@@ -9,6 +9,7 @@ export default function MessagesView() {
   const [messages, setMessages] = useState<any[]>([]);
   const [msgInput, setMsgInput] = useState('');
   const [userId, setUserId] = useState<string>('');
+  const [userAvatar, setUserAvatar] = useState<string>('/avatar_1.png');
 
   useEffect(() => {
     gsap.fromTo(".msg-panel", 
@@ -17,7 +18,11 @@ export default function MessagesView() {
     );
 
     const userStr = localStorage.getItem('user');
-    if (userStr) setUserId(JSON.parse(userStr).id);
+    if (userStr) {
+       const u = JSON.parse(userStr);
+       setUserId(u.id);
+       setUserAvatar(u.avatarUrl || '/avatar_1.png');
+    }
 
     const fetchContacts = async () => {
         const token = localStorage.getItem('access_token');
@@ -141,7 +146,7 @@ export default function MessagesView() {
                      <div key={i} className={`flex gap-4 ${isMine ? 'flex-row-reverse' : ''}`}>
                          <div className="w-10 h-10 flex-shrink-0">
                              <div className={`w-full h-full rounded-full border overflow-hidden bg-[#060b13] ${isMine ? 'border-[#BC13FE]' : 'border-[#00e6e6]'}`}>
-                                 <img src={isMine ? (JSON.parse(localStorage.getItem('user') || '{}').avatarUrl || "/avatar_1.png") : (activePartner.profile?.avatarUrl || "/avatar_1.png")} className="w-full h-full object-cover scale-150 top-1 relative" />
+                                 <img src={isMine ? userAvatar : (activePartner.profile?.avatarUrl || "/avatar_1.png")} className="w-full h-full object-cover scale-150 top-1 relative" />
                              </div>
                          </div>
                          <div className={`flex flex-col gap-1 max-w-[80%] ${isMine ? 'items-end' : ''}`}>
