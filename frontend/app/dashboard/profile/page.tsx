@@ -33,10 +33,10 @@ export default function ProfileView() {
             if(data) {
                 setProfile(data);
                 setFormData((prev: any) => ({ ...prev, ...data, name: data.user?.name || prev.name }));
-                if (data.user?.name) {
-                    setUser((prev: any) => ({ ...prev, name: data.user.name }));
+                if (data.user?.name || data.avatarUrl) {
+                    setUser((prev: any) => ({ ...prev, name: data.user?.name || prev.name, avatarUrl: data.avatarUrl }));
                     const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
-                    localStorage.setItem('user', JSON.stringify({ ...lsUser, name: data.user.name }));
+                    localStorage.setItem('user', JSON.stringify({ ...lsUser, name: data.user?.name || lsUser.name, avatarUrl: data.avatarUrl }));
                 }
                 const projStr = data.projects || '';
                 const pList = projStr.split(',').map((s: string) => s.trim()).filter(Boolean);
@@ -65,10 +65,10 @@ export default function ProfileView() {
         if(updatedReq.ok) {
             const upData = await updatedReq.json();
             setProfile(upData);
-            if (upData.user?.name) {
-                setUser((prev: any) => ({ ...prev, name: upData.user.name }));
+            if (upData.user?.name || upData.avatarUrl) {
+                setUser((prev: any) => ({ ...prev, name: upData.user?.name || prev.name, avatarUrl: upData.avatarUrl }));
                 const lsUser = JSON.parse(localStorage.getItem('user') || '{}');
-                localStorage.setItem('user', JSON.stringify({ ...lsUser, name: upData.user.name }));
+                localStorage.setItem('user', JSON.stringify({ ...lsUser, name: upData.user?.name || lsUser.name, avatarUrl: upData.avatarUrl }));
             }
         }
         setShowEditModal(false);
@@ -80,6 +80,17 @@ export default function ProfileView() {
 
   const handleDataChange = (field: string, val: string) => {
     setFormData((prev: any) => ({ ...prev, [field]: val }));
+  };
+
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+       const reader = new FileReader();
+       reader.onloadend = () => {
+           setFormData((prev: any) => ({ ...prev, avatarUrl: reader.result }));
+       };
+       reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -109,7 +120,7 @@ export default function ProfileView() {
           
           <div className="w-full bg-gradient-to-t from-[#00e6e6]/10 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end pt-12 p-3 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)]">
             <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
-            <img src="/avatar_1.png" alt="Avatar" className="w-[180px] h-[180px] object-cover absolute top-0 z-10 scale-125" />
+            <img src={profile?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-[180px] h-[180px] object-cover absolute top-0 z-10 scale-125 rounded-full mt-4" />
             
             <div className="w-full bg-[#0d1424]/90 backdrop-blur-md rounded-2xl border border-[#00e6e6]/50 py-4 text-center z-20 mt-32 relative">
               <p className="text-sm font-bold text-white tracking-wider truncate uppercase">{user?.name || 'ARYAN SHARMA'}</p>
@@ -244,6 +255,18 @@ export default function ProfileView() {
                
                {activeTab === 1 && (
                <div className="flex flex-col gap-6 max-w-[600px] mx-auto animate-fade-in relative z-10">
+                  <div className="flex items-center gap-6">
+                     <div className="w-24 h-24 rounded-2xl bg-[#111928] border border-white/10 overflow-hidden relative shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+                         <img src={formData.avatarUrl || profile?.avatarUrl || "/avatar_1.png"} className="w-full h-full object-cover" alt="Profile" />
+                     </div>
+                     <div className="flex flex-col gap-2">
+                         <label className="text-xs text-gray-400 uppercase tracking-wider">Profile Photo</label>
+                         <label className="bg-[#00e6e6]/10 border border-[#00e6e6]/30 text-[#00e6e6] px-4 py-2 rounded-lg text-xs font-bold tracking-widest cursor-pointer hover:bg-[#00e6e6]/20 transition-colors text-center">
+                            UPLOAD IMAGE
+                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                         </label>
+                     </div>
+                  </div>
                   <div className="flex flex-col gap-2">
                      <label className="text-xs text-gray-400 uppercase tracking-wider">Full Name</label>
                      <input type="text" value={formData.name || ''} onChange={e => handleDataChange('name', e.target.value)} placeholder="FULL NAME" className="w-full bg-[#111928]/60 border border-white/10 rounded-xl px-4 py-4 text-white focus:outline-none focus:border-[#00e6e6] transition text-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" />
@@ -260,7 +283,13 @@ export default function ProfileView() {
                            <option value="CSE">Computer Science (CSE)</option>
                            <option value="IT">Info Tech (IT)</option>
                            <option value="AI">Artificial Intelligence (AI)</option>
+                           <option value="AIML">AI & Machine Learning (AIML)</option>
+                           <option value="DS">Data Science (DS)</option>
                            <option value="ECE">Electronics (ECE)</option>
+                           <option value="IOT">Internet of Things (IOT)</option>
+                           <option value="EE">Electrical (EE)</option>
+                           <option value="ME">Mechanical (ME)</option>
+                           <option value="CE">Civil (CE)</option>
                         </select>
                      </div>
                      <div className="flex-1 flex flex-col gap-2">
@@ -271,6 +300,9 @@ export default function ProfileView() {
                            <option value="2025">2025</option>
                            <option value="2026">2026</option>
                            <option value="2027">2027</option>
+                           <option value="2028">2028</option>
+                           <option value="2029">2029</option>
+                           <option value="2030">2030</option>
                         </select>
                      </div>
                   </div>

@@ -6,9 +6,10 @@ import { Prisma, User } from '@prisma/client';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<any> {
     return this.prisma.user.findUnique({
       where: { email },
+      include: { profile: true }
     });
   }
 

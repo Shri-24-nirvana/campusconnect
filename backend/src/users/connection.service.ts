@@ -21,8 +21,8 @@ export class ConnectionService {
         OR: [{ senderId: userId }, { receiverId: userId }]
       },
       include: {
-        sender: { select: { id: true, name: true } },
-        receiver: { select: { id: true, name: true } }
+        sender: { select: { id: true, name: true, profile: { select: { avatarUrl: true } } } },
+        receiver: { select: { id: true, name: true, profile: { select: { avatarUrl: true } } } }
       }
     });
   }

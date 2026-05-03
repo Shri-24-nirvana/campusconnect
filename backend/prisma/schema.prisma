@@ -51,6 +51,7 @@ model Profile {
   xProfile     String?
   instagram    String?
   resumeUrl    String?
+  avatarUrl    String?
 }
 
 model Post {

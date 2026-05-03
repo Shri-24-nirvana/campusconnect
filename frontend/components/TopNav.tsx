@@ -63,7 +63,7 @@ export default function TopNav() {
       <div className="flex items-center gap-10 pointer-events-auto mt-4">
         <div className="flex items-center gap-4 drop-shadow-[0_0_15px_rgba(0,230,230,0.5)]">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#00e6e6] relative bg-[#0a1220]">
-             <img src="/avatar_1.png" alt="Avatar" className="w-full h-full object-cover scale-150 relative top-2" />
+             <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover scale-150 relative top-2" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-white text-lg tracking-wider uppercase">{user ? user.name : 'Unknown User'}</span>

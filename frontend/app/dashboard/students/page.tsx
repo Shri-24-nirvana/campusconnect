@@ -80,7 +80,7 @@ export default function StudentsDirectoryView() {
                 <div key={userObj.id} className="dir-card bg-[#060b13]/60 border border-white/5 hover:border-[#00e6e6]/50 transition-colors rounded-[2rem] p-4 flex flex-col shadow-[0_0_25px_rgba(0,0,0,0.5)] relative cursor-pointer group">
                    <div className="absolute top-5 right-5 w-2 h-2 rounded-full bg-[#00e6e6] shadow-[0_0_8px_#00e6e6] z-20"></div>
                    <div className="w-full h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-[1.5rem] flex justify-center items-end relative overflow-hidden border border-white/5 mb-3">
-                     <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+                     <img src={userObj.profile?.avatarUrl || "/avatar_1.png"} className="w-[120%] h-[120%] object-cover relative top-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all rounded-t-full" />
                    </div>
                    <h3 className="text-[14px] font-bold text-center text-white group-hover:text-[#00e6e6] transition-colors">{userObj.name}</h3>
                    <div className="flex justify-between items-center text-[11px] text-gray-400 mt-2 px-2 pb-3 border-b border-white/5">
@@ -115,8 +115,8 @@ export default function StudentsDirectoryView() {
              <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col items-center">
                 <button onClick={() => setViewingStudent(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
                 
-                <div className="w-32 h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-full flex justify-center items-end relative overflow-hidden border-2 border-[#00e6e6]/60 mb-6 shadow-[0_0_30px_rgba(0,230,230,0.2)]">
-                   <img src="/avatar_1.png" className="w-[120%] h-[120%] object-cover relative top-4" />
+                <div className="w-32 h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-full flex justify-center items-center relative overflow-hidden border-2 border-[#00e6e6]/60 mb-6 shadow-[0_0_30px_rgba(0,230,230,0.2)]">
+                   <img src={viewingStudent.profile?.avatarUrl || "/avatar_1.png"} className="w-full h-full object-cover" />
                 </div>
                 
                 <h2 className="text-white text-2xl font-black tracking-widest uppercase">{viewingStudent.name}</h2>

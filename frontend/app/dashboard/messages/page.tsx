@@ -101,7 +101,7 @@ export default function MessagesView() {
                 <div key={i} onClick={() => setActivePartner(contact)} className={`flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-colors ${activePartner?.id === contact.id ? 'bg-gradient-to-r from-[#00e6e6]/20 to-transparent border border-[#00e6e6]/30 shadow-[0_0_15px_rgba(0,230,230,0.1)]' : 'hover:bg-white/5 border border-transparent'}`}>
                   <div className="w-12 h-12 flex-shrink-0 relative">
                     <div className="w-full h-full rounded-full border border-white/20 bg-[#111928] overflow-hidden">
-                        <img src="/avatar_1.png" className={`w-full h-full object-cover scale-150 top-1 relative ${activePartner?.id !== contact.id ? 'opacity-70' : ''}`} />
+                        <img src={contact.profile?.avatarUrl || "/avatar_1.png"} className={`w-full h-full object-cover scale-150 top-1 relative ${activePartner?.id !== contact.id ? 'opacity-70' : ''}`} />
                     </div>
                   </div>
                   <div className="flex-1 border-b border-white/5 pb-2">
@@ -141,7 +141,7 @@ export default function MessagesView() {
                      <div key={i} className={`flex gap-4 ${isMine ? 'flex-row-reverse' : ''}`}>
                          <div className="w-10 h-10 flex-shrink-0">
                              <div className={`w-full h-full rounded-full border overflow-hidden bg-[#060b13] ${isMine ? 'border-[#BC13FE]' : 'border-[#00e6e6]'}`}>
-                                 <img src="/avatar_1.png" className="w-full h-full object-cover scale-150 top-1 relative" />
+                                 <img src={isMine ? (JSON.parse(localStorage.getItem('user') || '{}').avatarUrl || "/avatar_1.png") : (activePartner.profile?.avatarUrl || "/avatar_1.png")} className="w-full h-full object-cover scale-150 top-1 relative" />
                              </div>
                          </div>
                          <div className={`flex flex-col gap-1 max-w-[80%] ${isMine ? 'items-end' : ''}`}>
