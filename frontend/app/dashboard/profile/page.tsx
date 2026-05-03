@@ -72,6 +72,7 @@ export default function ProfileView() {
             }
         }
         setShowEditModal(false);
+        window.location.reload(); // Force TopNav and other persistent components to sync the new image
     } catch(err) {
         console.error(err);
     }
