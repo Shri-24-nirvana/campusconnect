@@ -24,11 +24,12 @@ export default function MessagesView() {
         if(!token) return;
         try {
             // Because connections endpoint might return mock or be empty, we just default
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}` } });
             if(res.ok) {
                 const data = await res.json();
-                // Filter connections to extract the actual partner user object
-                const parsedContacts = data.map((conn: any) => {
+                // Filter connections to extract the actual partner user object, and only show ACCEPTED ones
+                const acceptedConnections = data.filter((conn: any) => conn.status === 'ACCEPTED');
+                const parsedContacts = acceptedConnections.map((conn: any) => {
                     const uStr = localStorage.getItem('user');
                     const myId = uStr ? JSON.parse(uStr).id : '';
                     return (conn.senderId === myId) ? conn.receiver : conn.sender;
@@ -38,6 +39,8 @@ export default function MessagesView() {
         } catch(e) {}
     };
     fetchContacts();
+    const interval = setInterval(fetchContacts, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   // Polling logic for Active Chat
@@ -47,7 +50,7 @@ export default function MessagesView() {
           if(!activePartner) return;
           const token = localStorage.getItem('access_token');
           try {
-             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/messages/${activePartner.id}`, { headers: { Authorization: `Bearer ${token}` } });
+             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/messages/${activePartner.id}?t=${Date.now()}`, { headers: { Authorization: `Bearer ${token}` } });
              if(res.ok) {
                  const data = await res.json();
                  setMessages(data);
