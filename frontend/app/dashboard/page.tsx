@@ -68,15 +68,16 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="w-48 h-56 bg-gradient-to-t from-[#00e6e6]/20 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end p-2 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)] flex-shrink-0 ml-auto">
+            <div className="w-48 h-56 bg-gradient-to-t from-[#00e6e6]/20 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-between p-3 relative shadow-[inset_0_0_30px_rgba(0,230,230,0.4)] flex-shrink-0 ml-auto">
               <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
               
-              {/* Using full absolute inset so it doesn't scale awkwardly and cut the forehead */}
-              <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover object-top absolute inset-0 z-10" />
+              <div className="w-28 h-28 mt-2 rounded-full overflow-hidden border-2 border-[#00e6e6]/80 shadow-[0_0_20px_rgba(0,230,230,0.3)] z-20 bg-[#060b13] flex-shrink-0">
+                 <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover object-center" />
+              </div>
               
-              <div className="w-full bg-[#0d1424]/95 backdrop-blur-xl rounded-2xl border border-[#00e6e6]/50 py-3 text-center z-20 mb-1 shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
-                <p className="text-xs font-bold text-white tracking-wider truncate px-1">{(user?.name || 'Unknown User').toUpperCase()}</p>
-                <p className="text-[10px] text-gray-400 mt-1 font-mono">({user?.branch || 'CSE'}, {user?.year || '2026'})</p>
+              <div className="w-full bg-[#0d1424]/95 backdrop-blur-xl rounded-2xl border border-[#00e6e6]/50 py-3 text-center z-20 mt-auto shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+                <p className="text-[11px] font-bold text-white tracking-wider truncate px-1">{(user?.name || 'Unknown User').toUpperCase()}</p>
+                <p className="text-[9px] text-gray-400 mt-1 font-mono">({user?.branch || 'CSE'}, {user?.year || '2026'})</p>
               </div>
             </div>
           </div>
