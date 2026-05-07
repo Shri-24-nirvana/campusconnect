@@ -47,37 +47,35 @@ export default function Dashboard() {
             <h2 className="text-white font-bold tracking-widest text-[13px]">PROFILE VISIBILITY</h2>
             <span className="text-gray-500 cursor-pointer hover:text-white transition text-lg">⚙️</span>
           </div>
-          <div className="flex justify-between items-center flex-1 gap-6">
-            <div className="flex flex-col gap-8 justify-center h-full flex-1 min-w-[150px]">
+          <div className="flex justify-between items-center flex-1 gap-2 xl:gap-4">
+            <div className="flex flex-col gap-6 justify-center h-full flex-1">
               <div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[#00e6e6] text-3xl">👁️</span>
-                  <span className="text-4xl font-black text-white tracking-widest">{ranking?.score * 8 || 350}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[#00e6e6] text-2xl xl:text-3xl">👁️</span>
+                  <span className="text-3xl xl:text-4xl font-black text-white tracking-widest">{ranking?.score * 8 || 350}</span>
                 </div>
-                <span className="text-gray-400 text-sm tracking-wider mt-2 block">Profile Views</span>
+                <span className="text-gray-400 text-xs xl:text-sm tracking-wider mt-1 block">Profile Views</span>
               </div>
               <div>
-                <div className="flex items-center gap-4">
-                  <span className="text-[#00e6e6] text-2xl">👥</span>
-                  <span className="text-3xl font-black text-white tracking-widest">{ranking?.score || 12}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-[#00e6e6] text-xl xl:text-2xl">👥</span>
+                  <span className="text-2xl xl:text-3xl font-black text-white tracking-widest">{ranking?.score || 12}</span>
                 </div>
-                <span className="text-gray-400 text-sm tracking-wider mt-2 block">Connections</span>
+                <span className="text-gray-400 text-xs xl:text-sm tracking-wider mt-1 block">Connections</span>
               </div>
-              <div className="w-full h-2 bg-[#060b13] rounded mt-2 overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)] max-w-[200px]">
+              <div className="w-full h-1.5 bg-[#060b13] rounded mt-2 overflow-hidden shadow-[inset_0_0_5px_rgba(0,0,0,1)] max-w-[150px]">
                 <div className="h-full bg-gradient-to-r from-[#BC13FE] to-[#00e6e6] w-[60%] shadow-[0_0_15px_#00e6e6]"></div>
               </div>
             </div>
             
-            <div className="w-48 h-56 bg-gradient-to-t from-[#00e6e6]/20 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-between p-3 relative shadow-[inset_0_0_30px_rgba(0,230,230,0.4)] flex-shrink-0 ml-auto">
-              <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
+            <div className="w-36 h-48 xl:w-40 xl:h-52 bg-gradient-to-t from-[#00e6e6]/20 to-transparent border-[3px] border-[#00e6e6]/60 rounded-[1.5rem] flex flex-col items-center justify-end p-2 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)] flex-shrink-0">
+              <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
               
-              <div className="w-28 h-28 mt-2 rounded-full overflow-hidden border-2 border-[#00e6e6]/80 shadow-[0_0_20px_rgba(0,230,230,0.3)] z-20 bg-[#060b13] flex-shrink-0">
-                 <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover object-center" />
-              </div>
+              <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover object-top absolute inset-0 z-10 opacity-90" />
               
-              <div className="w-full bg-[#0d1424]/95 backdrop-blur-xl rounded-2xl border border-[#00e6e6]/50 py-3 text-center z-20 mt-auto shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
-                <p className="text-[11px] font-bold text-white tracking-wider truncate px-1">{(user?.name || 'Unknown User').toUpperCase()}</p>
-                <p className="text-[9px] text-gray-400 mt-1 font-mono">({user?.branch || 'CSE'}, {user?.year || '2026'})</p>
+              <div className="w-full bg-[#0d1424]/90 backdrop-blur-md rounded-xl border border-[#00e6e6]/50 py-2 text-center z-20 mb-1 shadow-[0_5px_15px_rgba(0,0,0,0.8)]">
+                <p className="text-[10px] xl:text-[11px] font-bold text-white tracking-wider truncate px-1">{(user?.name || 'Unknown User').toUpperCase()}</p>
+                <p className="text-[8px] xl:text-[9px] text-gray-400 mt-0.5 font-mono">({user?.branch || 'CSE'}, {user?.year || '2026'})</p>
               </div>
             </div>
           </div>
