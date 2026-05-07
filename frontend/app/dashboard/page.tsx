@@ -10,9 +10,14 @@ export default function Dashboard() {
   const [posts, setPosts] = useState<any[]>([]);
   const [teams, setTeams] = useState<any[]>([]);
   const [ranking, setRanking] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
     
     gsap.fromTo(".dash-panel", 
       { opacity: 0, scale: 0.95 },
@@ -65,11 +70,11 @@ export default function Dashboard() {
             
             <div className="w-48 h-56 bg-gradient-to-t from-[#00e6e6]/20 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end p-2 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)]">
               <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
-              <img src="/avatar_1.png" alt="Avatar" className="w-40 h-40 object-cover absolute top-0 z-10 scale-125" />
+              <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-40 h-40 object-cover absolute top-0 z-10 scale-125" />
               
               <div className="w-full bg-[#0d1424]/90 backdrop-blur-md rounded-2xl border border-[#00e6e6]/50 py-3 text-center z-20 mb-1">
-                <p className="text-xs font-bold text-white tracking-wider truncate px-1">ARYAN SHARMA</p>
-                <p className="text-[10px] text-gray-400 mt-1 font-mono">(CSE, 2026)</p>
+                <p className="text-xs font-bold text-white tracking-wider truncate px-1">{(user?.name || 'Unknown User').toUpperCase()}</p>
+                <p className="text-[10px] text-gray-400 mt-1 font-mono">({user?.branch || 'CSE'}, {user?.year || '2026'})</p>
               </div>
             </div>
           </div>
