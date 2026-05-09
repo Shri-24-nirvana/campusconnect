@@ -104,8 +104,8 @@ export default function ProfileView() {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 20 * 1024 * 1024) {
-        alert("File size exceeds 20MB limit.");
+    if (file.size > 5 * 1024 * 1024) {
+        alert("File size exceeds 5MB limit.");
         return;
     }
 
@@ -437,7 +437,7 @@ export default function ProfileView() {
                   </div>
 
                   <div className="flex flex-col gap-2 border border-white/10 rounded-2xl p-6 relative pt-6 bg-transparent mt-4">
-                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">CERTIFICATES (MAX 10, UP TO 20MB EACH)</label>
+                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">CERTIFICATES (MAX 10, UP TO 5MB EACH)</label>
                      
                      <div className="flex flex-col gap-4 mt-2">
                         <div className="flex flex-wrap gap-4">
