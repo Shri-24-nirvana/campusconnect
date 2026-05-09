@@ -41,6 +41,12 @@ export default function ProfileView() {
                 const projStr = data.projects || '';
                 const pList = projStr.split(',').map((s: string) => s.trim()).filter(Boolean);
                 setProjectList(pList.length > 0 ? pList : ['']);
+                
+                if (data.certificates && Array.isArray(data.certificates)) {
+                    setFormData((prev: any) => ({ ...prev, certificates: data.certificates }));
+                } else {
+                    setFormData((prev: any) => ({ ...prev, certificates: [] }));
+                }
             }
         })
         .catch(() => {});
@@ -92,6 +98,39 @@ export default function ProfileView() {
        };
        reader.readAsDataURL(file);
     }
+  };
+
+  const handleCertificateUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 20 * 1024 * 1024) {
+        alert("File size exceeds 20MB limit.");
+        return;
+    }
+
+    const currentCertificates = formData.certificates || [];
+    if (currentCertificates.length >= 10) {
+        alert("You can only upload up to 10 certificates.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setFormData((prev: any) => ({ 
+            ...prev, 
+            certificates: [...(prev.certificates || []), reader.result] 
+        }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeCertificate = (index: number) => {
+      setFormData((prev: any) => {
+          const newCerts = [...(prev.certificates || [])];
+          newCerts.splice(index, 1);
+          return { ...prev, certificates: newCerts };
+      });
   };
 
   return (
@@ -221,6 +260,24 @@ export default function ProfileView() {
              })()}
           </div>
         </div>
+
+        {/* Certificates Segment */}
+        {profile?.certificates && profile.certificates.length > 0 && (
+          <div className="prof-item flex flex-col pt-4">
+            <h2 className="text-white font-bold tracking-widest text-[16px] mb-6 pl-2 uppercase">Certificates</h2>
+            
+            <div className="flex gap-6 overflow-x-auto css-scrollbar pb-4">
+               {profile.certificates.map((cert: string, idx: number) => (
+                  <div key={idx} className="min-w-[200px] h-36 bg-[#111928] border border-[#BC13FE]/30 rounded-2xl p-2 shadow-[0_0_15px_rgba(188,19,254,0.15)] flex flex-col items-center group cursor-pointer hover:border-[#BC13FE]/60 transition relative overflow-hidden">
+                     <img src={cert} className="w-full h-full object-cover rounded-xl" alt={`Certificate ${idx+1}`} onClick={() => window.open(cert, '_blank')} />
+                     <div className="absolute bottom-0 w-full bg-black/80 text-center py-1 opacity-0 group-hover:opacity-100 transition">
+                         <span className="text-[10px] text-white font-bold tracking-widest">VIEW FULL</span>
+                     </div>
+                  </div>
+               ))}
+            </div>
+          </div>
+        )}
 
         {/* Academic Record Segment */}
         <div className="prof-item flex flex-col pt-4">
@@ -376,6 +433,30 @@ export default function ProfileView() {
                                 <span>+</span> ADD ANOTHER PROJECT
                              </button>
                          )}
+                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2 border border-white/10 rounded-2xl p-6 relative pt-6 bg-transparent mt-4">
+                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">CERTIFICATES (MAX 10, UP TO 20MB EACH)</label>
+                     
+                     <div className="flex flex-col gap-4 mt-2">
+                        <div className="flex flex-wrap gap-4">
+                            {(formData.certificates || []).map((cert: string, idx: number) => (
+                                <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/20 group">
+                                    <img src={cert} className="w-full h-full object-cover" alt={`Certificate ${idx+1}`} />
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex justify-center items-center">
+                                        <button onClick={() => removeCertificate(idx)} className="text-red-400 font-bold hover:text-red-300">✕ REMOVE</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {(formData.certificates || []).length < 10 && (
+                            <label className="w-full flex justify-center items-center gap-2 bg-[#BC13FE]/10 border border-[#BC13FE]/30 text-[#BC13FE] rounded-xl px-4 py-3 hover:bg-[#BC13FE]/20 transition-colors font-bold tracking-widest text-xs cursor-pointer">
+                                <span>+</span> UPLOAD CERTIFICATE
+                                <input type="file" accept="image/*" className="hidden" onChange={handleCertificateUpload} />
+                            </label>
+                        )}
                      </div>
                   </div>
                </div>

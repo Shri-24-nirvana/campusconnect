@@ -15,7 +15,7 @@ export class ProfileService {
   }
 
   async updateProfile(userId: string, data: any) {
-    const { name, bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl, avatarUrl } = data;
+    const { name, bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl, avatarUrl, certificates } = data;
     
     // Convert string array to Prisma String[] format if passed as a comma-separated string from UI inputs
     let skillsArray = data.skills;
@@ -24,7 +24,7 @@ export class ProfileService {
     }
 
     const payload = { 
-        bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl, avatarUrl,
+        bio, branch, year, collegeEmail, projects, achievements, linkedin, github, xProfile, instagram, resumeUrl, avatarUrl, certificates,
         skills: skillsArray 
     };
 

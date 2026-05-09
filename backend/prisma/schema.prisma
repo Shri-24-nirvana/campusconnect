@@ -52,6 +52,7 @@ model Profile {
   instagram    String?
   resumeUrl    String?
   avatarUrl    String?
+  certificates String[]
 }
 
 model Post {
