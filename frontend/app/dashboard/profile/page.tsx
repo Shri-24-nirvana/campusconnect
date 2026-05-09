@@ -11,6 +11,7 @@ export default function ProfileView() {
   const [formData, setFormData] = useState<any>({});
   const [isSaving, setIsSaving] = useState(false);
   const [projectList, setProjectList] = useState<string[]>(['']);
+  const [viewCertificate, setViewCertificate] = useState<string | null>(null);
   
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -268,8 +269,8 @@ export default function ProfileView() {
             
             <div className="flex gap-6 overflow-x-auto css-scrollbar pb-4">
                {profile.certificates.map((cert: string, idx: number) => (
-                  <div key={idx} className="min-w-[200px] h-36 bg-[#111928] border border-[#BC13FE]/30 rounded-2xl p-2 shadow-[0_0_15px_rgba(188,19,254,0.15)] flex flex-col items-center group cursor-pointer hover:border-[#BC13FE]/60 transition relative overflow-hidden">
-                     <img src={cert} className="w-full h-full object-cover rounded-xl" alt={`Certificate ${idx+1}`} onClick={() => window.open(cert, '_blank')} />
+                  <div key={idx} className="min-w-[200px] h-36 bg-[#111928] border border-[#BC13FE]/30 rounded-2xl p-2 shadow-[0_0_15px_rgba(188,19,254,0.15)] flex flex-col items-center group cursor-pointer hover:border-[#BC13FE]/60 transition relative overflow-hidden" onClick={() => setViewCertificate(cert)}>
+                     <img src={cert} className="w-full h-full object-cover rounded-xl" alt={`Certificate ${idx+1}`} />
                      <div className="absolute bottom-0 w-full bg-black/80 text-center py-1 opacity-0 group-hover:opacity-100 transition">
                          <span className="text-[10px] text-white font-bold tracking-widest">VIEW FULL</span>
                      </div>
@@ -476,6 +477,20 @@ export default function ProfileView() {
                .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
                @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
             `}</style>
+          </div>
+        </div>
+      )}
+
+      {viewCertificate && (
+        <div className="fixed inset-0 z-[60] flex justify-center items-center backdrop-blur-xl bg-black/80 p-4" onClick={() => setViewCertificate(null)}>
+          <div className="relative max-w-5xl max-h-[90vh] w-full flex justify-center animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            <button 
+              onClick={() => setViewCertificate(null)} 
+              className="absolute -top-12 right-0 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex justify-center items-center font-bold text-xl shadow-[0_0_15px_rgba(239,68,68,0.5)] transition border-2 border-white/20 z-10"
+            >
+              ✕
+            </button>
+            <img src={viewCertificate} className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/20" alt="Full Certificate" />
           </div>
         </div>
       )}
