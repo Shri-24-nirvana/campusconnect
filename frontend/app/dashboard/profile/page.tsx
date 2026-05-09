@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 
 export default function ProfileView() {
@@ -481,8 +482,8 @@ export default function ProfileView() {
         </div>
       )}
 
-      {viewCertificate && (
-        <div className="fixed inset-0 z-[60] flex justify-center items-center backdrop-blur-xl bg-black/80 p-4" onClick={() => setViewCertificate(null)}>
+      {viewCertificate && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] flex justify-center items-center backdrop-blur-xl bg-black/80 p-4" onClick={() => setViewCertificate(null)}>
           <div className="relative max-w-5xl max-h-[90vh] w-full flex justify-center animate-fade-in" onClick={(e) => e.stopPropagation()}>
             <button 
               onClick={() => setViewCertificate(null)} 
@@ -492,7 +493,8 @@ export default function ProfileView() {
             </button>
             <img src={viewCertificate} className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/20" alt="Full Certificate" />
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
