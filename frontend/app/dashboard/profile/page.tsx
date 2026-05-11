@@ -156,6 +156,29 @@ export default function ProfileView() {
     reader.readAsDataURL(file);
   };
 
+  const openPdfBase64 = async (base64Data: string) => {
+    if (!base64Data) return;
+    
+    // Open a blank tab synchronously to avoid popup blockers
+    const newTab = window.open('', '_blank');
+    if (!newTab) {
+        alert("Please allow popups to view the resume.");
+        return;
+    }
+    
+    newTab.document.write('<html><body style="background: #0d1424; color: #00e6e6; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;"><h2>Loading Resume...</h2></body></html>');
+    
+    try {
+        const res = await fetch(base64Data);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        newTab.location.href = url;
+    } catch(e) {
+        console.error("Failed to parse PDF", e);
+        newTab.location.href = base64Data; // Fallback
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-32 max-w-[1500px] mx-auto min-h-screen">
       
@@ -194,7 +217,7 @@ export default function ProfileView() {
           {profile?.resumeUrl && (
             <div className="mt-6 flex justify-center">
               <button 
-                onClick={() => window.open(profile.resumeUrl, '_blank')} 
+                onClick={() => openPdfBase64(profile.resumeUrl)} 
                 className="flex items-center gap-2 bg-[#111928] border border-[#BC13FE]/50 text-[#BC13FE] px-6 py-3 rounded-xl font-bold tracking-widest text-xs hover:bg-[#BC13FE]/10 transition shadow-[0_0_15px_rgba(188,19,254,0.2)]"
               >
                 📄 VIEW RESUME
@@ -502,7 +525,7 @@ export default function ProfileView() {
                             <div className="flex items-center justify-between bg-[#111928] border border-[#00e6e6]/30 rounded-xl px-4 py-3 shadow-[0_0_10px_rgba(0,230,230,0.1)]">
                                 <span className="text-[#00e6e6] font-bold text-xs tracking-widest">📄 RESUME UPLOADED</span>
                                 <div className="flex gap-4">
-                                    <button onClick={() => window.open(formData.resumeUrl, '_blank')} className="text-gray-300 hover:text-white text-xs font-bold">VIEW</button>
+                                    <button onClick={() => openPdfBase64(formData.resumeUrl)} className="text-gray-300 hover:text-white text-xs font-bold">VIEW</button>
                                     <button onClick={() => setFormData((prev: any) => ({ ...prev, resumeUrl: null }))} className="text-red-400 hover:text-red-300 text-xs font-bold">✕ REMOVE</button>
                                 </div>
                             </div>
