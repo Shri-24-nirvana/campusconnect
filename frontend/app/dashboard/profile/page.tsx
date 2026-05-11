@@ -135,6 +135,27 @@ export default function ProfileView() {
       });
   };
 
+  const handleResumeUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+        alert("Please upload a PDF file for your resume.");
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        alert("Resume size exceeds 10MB limit.");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setFormData((prev: any) => ({ ...prev, resumeUrl: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-32 max-w-[1500px] mx-auto min-h-screen">
       
@@ -169,6 +190,17 @@ export default function ProfileView() {
               <p className="text-xs text-gray-400 mt-1 font-mono uppercase">({profile?.branch || 'CSE'}, {profile?.year || '2026'})</p>
             </div>
           </div>
+
+          {profile?.resumeUrl && (
+            <div className="mt-6 flex justify-center">
+              <button 
+                onClick={() => window.open(profile.resumeUrl, '_blank')} 
+                className="flex items-center gap-2 bg-[#111928] border border-[#BC13FE]/50 text-[#BC13FE] px-6 py-3 rounded-xl font-bold tracking-widest text-xs hover:bg-[#BC13FE]/10 transition shadow-[0_0_15px_rgba(188,19,254,0.2)]"
+              >
+                📄 VIEW RESUME
+              </button>
+            </div>
+          )}
 
           <div className="mt-8">
             <h2 className="text-xl text-white font-bold tracking-widest mb-6">Skills</h2>
@@ -457,6 +489,27 @@ export default function ProfileView() {
                             <label className="w-full flex justify-center items-center gap-2 bg-[#BC13FE]/10 border border-[#BC13FE]/30 text-[#BC13FE] rounded-xl px-4 py-3 hover:bg-[#BC13FE]/20 transition-colors font-bold tracking-widest text-xs cursor-pointer">
                                 <span>+</span> UPLOAD CERTIFICATE
                                 <input type="file" accept="image/*" className="hidden" onChange={handleCertificateUpload} />
+                            </label>
+                        )}
+                     </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2 border border-white/10 rounded-2xl p-6 relative pt-6 bg-transparent mt-4">
+                     <label className="text-[10px] text-gray-400 uppercase tracking-wider absolute -top-2 left-4 bg-[#0d1424] px-1">RESUME (PDF, UP TO 10MB)</label>
+                     
+                     <div className="flex flex-col gap-4 mt-2">
+                        {formData.resumeUrl ? (
+                            <div className="flex items-center justify-between bg-[#111928] border border-[#00e6e6]/30 rounded-xl px-4 py-3 shadow-[0_0_10px_rgba(0,230,230,0.1)]">
+                                <span className="text-[#00e6e6] font-bold text-xs tracking-widest">📄 RESUME UPLOADED</span>
+                                <div className="flex gap-4">
+                                    <button onClick={() => window.open(formData.resumeUrl, '_blank')} className="text-gray-300 hover:text-white text-xs font-bold">VIEW</button>
+                                    <button onClick={() => setFormData((prev: any) => ({ ...prev, resumeUrl: null }))} className="text-red-400 hover:text-red-300 text-xs font-bold">✕ REMOVE</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <label className="w-full flex justify-center items-center gap-2 bg-[#00e6e6]/10 border border-[#00e6e6]/30 text-[#00e6e6] rounded-xl px-4 py-3 hover:bg-[#00e6e6]/20 transition-colors font-bold tracking-widest text-xs cursor-pointer">
+                                <span>+</span> UPLOAD RESUME PDF
+                                <input type="file" accept="application/pdf" className="hidden" onChange={handleResumeUpload} />
                             </label>
                         )}
                      </div>
