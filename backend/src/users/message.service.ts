@@ -22,4 +22,17 @@ export class MessageService {
       orderBy: { createdAt: 'asc' }
     });
   }
+
+  async deleteMessage(messageId: string, userId: string) {
+    // Verify the message exists and user is either sender or receiver
+    const message = await this.prisma.message.findUnique({ where: { id: messageId } });
+    if (!message) return { success: false, message: 'Message not found' };
+    
+    if (message.senderId !== userId && message.receiverId !== userId) {
+        return { success: false, message: 'Unauthorized' };
+    }
+
+    await this.prisma.message.delete({ where: { id: messageId } });
+    return { success: true };
+  }
 }

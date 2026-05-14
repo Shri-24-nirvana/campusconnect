@@ -10,6 +10,7 @@ export default function MessagesView() {
   const [msgInput, setMsgInput] = useState('');
   const [userId, setUserId] = useState<string>('');
   const [userAvatar, setUserAvatar] = useState<string>('/avatar_1.png');
+  const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
 
   useEffect(() => {
     gsap.fromTo(".msg-panel", 
@@ -86,6 +87,28 @@ export default function MessagesView() {
       });
   };
 
+  const toggleSelection = (msgId: string) => {
+      setSelectedMessages(prev => 
+          prev.includes(msgId) ? prev.filter(id => id !== msgId) : [...prev, msgId]
+      );
+  };
+
+  const handleDeleteSelected = async () => {
+      if (!selectedMessages.length) return;
+      const token = localStorage.getItem('access_token');
+      
+      // Optimistic delete
+      setMessages(prev => prev.filter(m => !selectedMessages.includes(m.id)));
+      
+      for (const msgId of selectedMessages) {
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/messages/${msgId}`, {
+              method: 'DELETE',
+              headers: { Authorization: `Bearer ${token}` }
+          });
+      }
+      setSelectedMessages([]);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-32 max-w-[1700px] mx-auto min-h-screen">
       
@@ -131,7 +154,14 @@ export default function MessagesView() {
             <h2 className="text-white font-bold tracking-widest uppercase text-sm">
                 {activePartner ? `CHAT: ${activePartner.name}` : `MESSAGING HUB`}
             </h2>
-            <button className="w-6 h-6 rounded-full bg-white/10 flex justify-center items-center text-xs text-gray-400 hover:bg-white hover:text-black transition">✕</button>
+            <div className="flex gap-4">
+               {selectedMessages.length > 0 && (
+                  <button onClick={handleDeleteSelected} className="text-xs bg-red-500/20 text-red-400 px-4 py-1.5 rounded-lg border border-red-500/30 font-bold hover:bg-red-500 hover:text-white transition shadow-[0_0_10px_rgba(239,68,68,0.3)]">
+                     🗑️ DELETE ({selectedMessages.length})
+                  </button>
+               )}
+               <button onClick={() => {setActivePartner(null); setSelectedMessages([]);}} className="w-6 h-6 rounded-full bg-white/10 flex justify-center items-center text-xs text-gray-400 hover:bg-white hover:text-black transition">✕</button>
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto px-2 py-6 css-scrollbar flex flex-col gap-6">
@@ -153,7 +183,11 @@ export default function MessagesView() {
                             <span className={`text-xs text-gray-500 font-bold ${isMine ? 'mr-2' : 'ml-2'}`}>
                                 {isMine ? 'You' : activePartner.name}
                             </span>
-                            <div className={`p-4 text-sm shadow-[0_5px_15px_rgba(0,0,0,0.3)] ${
+                            <div 
+                                onClick={() => msg.id && toggleSelection(msg.id)}
+                                className={`p-4 text-sm shadow-[0_5px_15px_rgba(0,0,0,0.3)] cursor-pointer transition-all ${
+                                    selectedMessages.includes(msg.id) ? 'ring-2 ring-red-500 opacity-80 scale-95' : ''
+                                } ${
                                 isMine 
                                 ? 'bg-gradient-to-r from-[#00e6e6]/20 to-[#00e6e6]/10 border border-[#00e6e6]/30 rounded-2xl rounded-tr-sm text-white shadow-[0_5px_15px_rgba(0,230,230,0.1)]' 
                                 : 'bg-[#111928] border border-white/10 rounded-2xl rounded-tl-sm text-gray-300'

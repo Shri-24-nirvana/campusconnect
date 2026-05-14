@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body, UseGuards, Request, Get } from '@nestjs/common';
+import { Controller, Post, Param, Body, UseGuards, Request, Get, Delete } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -16,5 +16,11 @@ export class MessageController {
   @Get(':partnerId')
   async getChatHistory(@Request() req: any, @Param('partnerId') partnerId: string) {
     return this.messageService.getMessages(req.user.id, partnerId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async deleteMessage(@Request() req: any, @Param('id') id: string) {
+    return this.messageService.deleteMessage(id, req.user.id);
   }
 }
