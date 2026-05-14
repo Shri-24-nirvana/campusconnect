@@ -32,31 +32,34 @@ export default function TeamsView() {
     const token = localStorage.getItem('access_token');
     if (token) {
        // Fetch All Users
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory?t=${Date.now()}`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
        .then(data => {
+           console.log("ALL USERS:", data);
            if (Array.isArray(data)) setAllUsers(data);
-       }).catch(() => {});
+       }).catch(e => console.error("ALL USERS ERROR:", e));
 
        // Fetch Connections
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
        .then(data => {
+           console.log("CONNECTIONS RAW:", data);
            if (Array.isArray(data)) {
                const accepted = data.filter((c: any) => c.status === 'ACCEPTED');
                const userStr = localStorage.getItem('user');
                const myId = userStr ? JSON.parse(userStr).id : '';
                const parsedContacts = accepted.map((conn: any) => (conn.senderId === myId) ? conn.receiver : conn.sender);
+               console.log("PARSED CONNECTIONS:", parsedContacts.filter(Boolean));
                setConnections(parsedContacts.filter(Boolean));
            }
-       }).catch(() => {});
+       }).catch(e => console.error("CONNECTIONS ERROR:", e));
 
        // Fetch My Teams
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams?t=${Date.now()}`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
@@ -330,10 +333,10 @@ export default function TeamsView() {
                       <span className="absolute right-4 top-3 text-gray-500">🔍</span>
                    </div>
                       <div className="flex flex-col gap-2 max-h-36 overflow-y-auto css-scrollbar pr-2 mt-2">
-                      {(searchQuery ? allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase())) : connections).map(conn => {
+                      {(searchQuery ? allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase().trim())) : connections).map((conn, idx) => {
                           const isAdded = invitedMembers.includes(conn.id);
                           return (
-                             <div key={conn.id} className={`flex items-center justify-between p-2 rounded-lg transition-colors border ${isAdded ? 'bg-[#00e6e6]/5 border-[#00e6e6]/20' : 'bg-[#111928]/40 border-white/5 hover:border-white/20'}`}>
+                             <div key={conn.id || idx} className={`flex items-center justify-between p-2 rounded-lg transition-colors border ${isAdded ? 'bg-[#00e6e6]/5 border-[#00e6e6]/20' : 'bg-[#111928]/40 border-white/5 hover:border-white/20'}`}>
                                 <div className="flex items-center gap-3">
                                    <div className="w-8 h-8 rounded-full overflow-hidden bg-[#060b13] border border-white/20">
                                       <img src={conn.profile?.avatarUrl || "/avatar_1.png"} className="w-full h-full object-cover scale-150" />
@@ -352,7 +355,7 @@ export default function TeamsView() {
                              </div>
                           );
                       })}
-                      {searchQuery && allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                      {searchQuery && allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase().trim())).length === 0 && (
                           <div className="text-center text-xs text-gray-500 py-4">No directory members found matching "{searchQuery}"</div>
                       )}
                       {!searchQuery && connections.length === 0 && (
