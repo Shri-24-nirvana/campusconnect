@@ -50,8 +50,11 @@ export default function TeamsView() {
            console.log("CONNECTIONS RAW:", data);
            if (Array.isArray(data)) {
                const accepted = data.filter((c: any) => c.status === 'ACCEPTED');
-               const userStr = localStorage.getItem('user');
-               const myId = userStr ? JSON.parse(userStr).id : '';
+               let myId = '';
+               try {
+                  const userStr = localStorage.getItem('user');
+                  if (userStr && userStr !== 'undefined') myId = JSON.parse(userStr).id;
+               } catch (e) { console.error('Parse error', e); }
                const parsedContacts = accepted.map((conn: any) => (conn.senderId === myId) ? conn.receiver : conn.sender);
                console.log("PARSED CONNECTIONS:", parsedContacts.filter(Boolean));
                setConnections(parsedContacts.filter(Boolean));
@@ -359,7 +362,10 @@ export default function TeamsView() {
                           <div className="text-center text-xs text-gray-500 py-4">No directory members found matching "{searchQuery}"</div>
                       )}
                       {!searchQuery && connections.length === 0 && (
-                          <div className="text-center text-xs text-gray-500 py-4">You have no connections. Use the search to find students!</div>
+                          <div className="text-center text-xs text-gray-500 py-4">
+                             You have no connections. Use the search to find students!
+                             <br/><span className="opacity-50 text-[9px]">(Debug: {allUsers.length} global users loaded)</span>
+                          </div>
                       )}
                     </div>              </div>
                 </div>
