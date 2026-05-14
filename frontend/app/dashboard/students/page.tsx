@@ -83,9 +83,9 @@ export default function StudentsDirectoryView() {
                      <img src={userObj.profile?.avatarUrl || "/avatar_1.png"} className="w-[120%] h-[120%] object-cover relative top-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all rounded-t-full" />
                    </div>
                    <h3 className="text-[14px] font-bold text-center text-white group-hover:text-[#00e6e6] transition-colors">{userObj.name}</h3>
-                   <div className="flex justify-between items-center text-[11px] text-gray-400 mt-2 px-2 pb-3 border-b border-white/5">
-                     <span className="font-mono">{userObj.profile?.branch || 'UNKNOWN'}</span>
-                     <span className="text-white font-bold">{(userObj.profile?.skills && userObj.profile.skills[0]) || 'Student'}</span>
+                   <div className="flex justify-between items-center text-[11px] text-gray-400 mt-2 px-2 pb-3 border-b border-white/5 gap-2">
+                     <span className="font-mono truncate max-w-[40%]">{userObj.profile?.branch || 'UNKNOWN'}</span>
+                     <span className="text-white font-bold truncate max-w-[60%] text-right" title={(userObj.profile?.skills && userObj.profile.skills[0]) || 'Student'}>{(userObj.profile?.skills && userObj.profile.skills[0]) || 'Student'}</span>
                    </div>
                    <div className="flex gap-2 mt-4">
                      <button onClick={() => setViewingStudent(userObj)} className="flex-1 py-1.5 rounded-md border border-white/10 text-[9px] font-black tracking-wider text-gray-300 hover:bg-white/10 transition">PROFILE</button>
