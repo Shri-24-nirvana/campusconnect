@@ -30,6 +30,14 @@ export class TeamService {
            status: 'PENDING'
        }));
        await this.prisma.teamMember.createMany({ data: invites }).catch(() => {});
+
+       // Send invitation messages
+       const messages = invitedMemberIds.map((id: string) => ({
+           senderId: userId,
+           receiverId: id,
+           content: `I've created a team called "${team.name}" for ${targetEvent} and invited you to join. Please accept the invitation!`
+       }));
+       await this.prisma.message.createMany({ data: messages }).catch(() => {});
     }
 
     return team;
@@ -77,5 +85,12 @@ export class TeamService {
               status: 'PENDING'
           }
       }).catch(() => null); // mock teams might throw FK error, suppress it
+  }
+
+  async acceptInvitation(userId: string, teamId: string) {
+      return this.prisma.teamMember.updateMany({
+          where: { userId, teamId, status: 'PENDING' },
+          data: { status: 'ACCEPTED' }
+      });
   }
 }

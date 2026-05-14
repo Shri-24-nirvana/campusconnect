@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, UseGuards, Request, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, UseGuards, Request, Param } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -33,5 +33,11 @@ export class TeamController {
   @Delete(':id')
   async deleteTeam(@Request() req: any, @Param('id') teamId: string) {
     return this.teamService.deleteTeam(req.user.id, teamId);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('accept/:teamId')
+  async acceptInvitation(@Request() req: any, @Param('teamId') teamId: string) {
+    return this.teamService.acceptInvitation(req.user.id, teamId);
   }
 }

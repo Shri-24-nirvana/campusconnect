@@ -14,12 +14,8 @@ export default function TeamsView() {
   const [invitedMembers, setInvitedMembers] = useState<string[]>([]);
   const [managingTeam, setManagingTeam] = useState<any>(null);
 
-  const mockConnections = [
-      { id: 'u1', name: 'Rohan Rai', branch: 'CSE' },
-      { id: 'u2', name: 'Priya Singh', branch: 'ECE' },
-      { id: 'u3', name: 'Ananya Sharma', branch: 'IT' },
-      { id: 'u4', name: 'Karan Patel', branch: 'ME' }
-  ];
+  const [connections, setConnections] = useState<any[]>([]);
+  const [allUsers, setAllUsers] = useState<any[]>([]);
 
   const upcomingEvents = [
     { id: 'ev1', name: "CODEFEST '24", date: 'May 15', type: 'Hackathon', desc: '48-hour global hackathon. Build the future of web tech.' },
@@ -35,6 +31,30 @@ export default function TeamsView() {
 
     const token = localStorage.getItem('access_token');
     if (token) {
+       // Fetch All Users
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory`, {
+          headers: { Authorization: `Bearer ${token}` }
+       })
+       .then(res => res.json())
+       .then(data => {
+           if (Array.isArray(data)) setAllUsers(data);
+       }).catch(() => {});
+
+       // Fetch Connections
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
+          headers: { Authorization: `Bearer ${token}` }
+       })
+       .then(res => res.json())
+       .then(data => {
+           if (Array.isArray(data)) {
+               const accepted = data.filter((c: any) => c.status === 'ACCEPTED');
+               const userStr = localStorage.getItem('user');
+               const myId = userStr ? JSON.parse(userStr).id : '';
+               const parsedContacts = accepted.map((conn: any) => (conn.senderId === myId) ? conn.receiver : conn.sender);
+               setConnections(parsedContacts.filter(Boolean));
+           }
+       }).catch(() => {});
+
        // Fetch My Teams
        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -42,12 +62,18 @@ export default function TeamsView() {
        .then(res => res.json())
        .then(data => {
            if (Array.isArray(data)) {
-               setMyTeams(data.map((t: any) => ({
-                   id: t.id,
-                   name: t.name,
-                   event: t.targetEvent,
-                   members: t.members?.length || 1
-               })));
+               setMyTeams(data.map((t: any) => {
+                   const pendingCount = t.members?.filter((m: any) => m.status === 'PENDING').length || 0;
+                   const allAccepted = t.members?.length > 1 && pendingCount === 0;
+                   return {
+                       id: t.id,
+                       name: t.name,
+                       event: t.targetEvent,
+                       membersCount: t.members?.length || 1,
+                       pendingCount,
+                       allAccepted
+                   };
+               }));
            }
        }).catch(() => {});
 
@@ -95,11 +121,15 @@ export default function TeamsView() {
           if (!res.ok) throw new Error('Failed to create team');
           const data = await res.json();
           
+          const pendingCount = invitedMembers.length;
+          const allAccepted = invitedMembers.length === 0;
           const newTeam = {
              id: data.id,
              name: data.name,
              event: data.targetEvent,
-             members: 1 + invitedMembers.length
+             membersCount: 1 + invitedMembers.length,
+             pendingCount,
+             allAccepted
           };
           setMyTeams(prev => [newTeam, ...prev]);
           setShowModal(false);
@@ -132,9 +162,16 @@ export default function TeamsView() {
                   <div key={t.id} className="bg-[#111928]/40 border border-[#00e6e6]/30 rounded-2xl p-5 shadow-[inset_0_0_15px_rgba(0,230,230,0.05)] relative overflow-hidden group hover:border-[#00e6e6] transition-colors">
                      <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#00e6e6]/20 to-transparent rounded-bl-full"></div>
                      <h3 className="font-bold text-white text-[16px] mb-1">{t.name}</h3>
-                     <p className="text-[10px] text-[#00e6e6] font-mono mb-5 uppercase tracking-wider bg-[#00e6e6]/10 w-fit px-2 py-0.5 rounded border border-[#00e6e6]/20">{t.event}</p>
+                     <div className="flex justify-between items-center mb-5">
+                         <p className="text-[10px] text-[#00e6e6] font-mono uppercase tracking-wider bg-[#00e6e6]/10 w-fit px-2 py-0.5 rounded border border-[#00e6e6]/20">{t.event}</p>
+                         {t.allAccepted ? (
+                             <span className="text-[10px] font-bold text-green-500">Team Completed ✓</span>
+                         ) : t.pendingCount > 0 ? (
+                             <span className="text-[10px] font-bold text-yellow-500">Pending Verification</span>
+                         ) : null}
+                     </div>
                      <div className="flex justify-between items-center mt-2">
-                         <span className="text-[11px] text-gray-500">Members <span className="text-white font-bold">{t.members}/4</span></span>
+                         <span className="text-[11px] text-gray-500">Members <span className="text-white font-bold">{t.membersCount}/4</span></span>
                          <button onClick={() => setManagingTeam(t)} className="py-1.5 px-4 bg-[#00e6e6] text-[#060b13] rounded text-[10px] font-bold shadow-[0_0_15px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">Manage</button>
                      </div>
                   </div>
@@ -292,19 +329,18 @@ export default function TeamsView() {
                       />
                       <span className="absolute right-4 top-3 text-gray-500">🔍</span>
                    </div>
-                   
-                   <div className="flex flex-col gap-2 max-h-36 overflow-y-auto css-scrollbar pr-2 mt-2">
-                      {mockConnections.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).map(conn => {
+                      <div className="flex flex-col gap-2 max-h-36 overflow-y-auto css-scrollbar pr-2 mt-2">
+                      {(searchQuery ? allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase())) : connections).map(conn => {
                           const isAdded = invitedMembers.includes(conn.id);
                           return (
                              <div key={conn.id} className={`flex items-center justify-between p-2 rounded-lg transition-colors border ${isAdded ? 'bg-[#00e6e6]/5 border-[#00e6e6]/20' : 'bg-[#111928]/40 border-white/5 hover:border-white/20'}`}>
                                 <div className="flex items-center gap-3">
                                    <div className="w-8 h-8 rounded-full overflow-hidden bg-[#060b13] border border-white/20">
-                                      <img src="/avatar_1.png" className="w-full h-full object-cover scale-150" />
+                                      <img src={conn.profile?.avatarUrl || "/avatar_1.png"} className="w-full h-full object-cover scale-150" />
                                    </div>
                                    <div className="flex flex-col">
                                       <span className="text-sm text-white font-bold leading-tight">{conn.name}</span>
-                                      <span className="text-[10px] text-gray-500 font-mono">{conn.branch}</span>
+                                      <span className="text-[10px] text-gray-500 font-mono">{conn.profile?.branch || 'Student'}</span>
                                    </div>
                                 </div>
                                 
@@ -316,10 +352,13 @@ export default function TeamsView() {
                              </div>
                           );
                       })}
-                      {mockConnections.filter(c => c.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
-                          <div className="text-center text-xs text-gray-500 py-4">No connections found matching "{searchQuery}"</div>
+                      {searchQuery && allUsers.filter(u => u.name?.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                          <div className="text-center text-xs text-gray-500 py-4">No directory members found matching "{searchQuery}"</div>
                       )}
-                   </div>
+                      {!searchQuery && connections.length === 0 && (
+                          <div className="text-center text-xs text-gray-500 py-4">You have no connections. Use the search to find students!</div>
+                      )}
+                    </div>              </div>
                 </div>
               </div>
 
