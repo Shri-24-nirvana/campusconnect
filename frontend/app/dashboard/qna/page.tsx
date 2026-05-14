@@ -8,6 +8,7 @@ export default function QnAAlumniHub() {
   const [mentorshipStatus, setMentorshipStatus] = useState<Record<string, boolean>>({});
   const [questionText, setQuestionText] = useState('');
   const [votes, setVotes] = useState<Record<string, number>>({});
+  const [votedItems, setVotedItems] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     gsap.fromTo(".qna-item", 
@@ -34,7 +35,16 @@ export default function QnAAlumniHub() {
   };
 
   const handleEntityVote = async (id: string, delta: number) => {
-      setVotes(prev => ({ ...prev, [id]: (prev[id] || 0) + delta }));
+      const isUpvoting = delta > 0;
+      const hasVoted = votedItems[id];
+
+      if (!isUpvoting && !hasVoted) return;
+
+      const newDelta = hasVoted ? -1 : 1;
+      
+      setVotes(prev => ({ ...prev, [id]: (prev[id] || 0) + newDelta }));
+      setVotedItems(prev => ({ ...prev, [id]: !hasVoted }));
+
       try {
           const token = localStorage.getItem('access_token');
           await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/qna/${id}/upvote`, {
@@ -98,7 +108,7 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/60 border border-[#00e6e6]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#00e6e6]/10 mr-6">
-                      <button onClick={() => handleEntityVote('q1', 1)} className="text-[#00e6e6] text-xl mb-2 hover:scale-125 transition">▲</button>
+                      <button onClick={() => handleEntityVote('q1', 1)} className={`${votedItems['q1'] ? 'text-white drop-shadow-[0_0_10px_#fff]' : 'text-[#00e6e6]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
                       <span className="text-white font-black text-xl mb-2">{10 + (votes['q1'] || 0)}</span>
                       <button onClick={() => handleEntityVote('q1', -1)} className="text-[#00e6e6]/50 text-xl hover:text-[#00e6e6] hover:scale-125 transition">▼</button>
                    </div>
@@ -138,7 +148,7 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/40 border border-[#BC13FE]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#BC13FE]/10 mr-6">
-                      <button onClick={() => handleEntityVote('q2', 1)} className="text-[#BC13FE] text-xl mb-2 hover:scale-125 transition">▲</button>
+                      <button onClick={() => handleEntityVote('q2', 1)} className={`${votedItems['q2'] ? 'text-white drop-shadow-[0_0_10px_#fff]' : 'text-[#BC13FE]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
                       <span className="text-white font-black text-xl mb-2">{2 + (votes['q2'] || 0)}</span>
                       <button onClick={() => handleEntityVote('q2', -1)} className="text-[#BC13FE]/50 text-xl hover:text-[#BC13FE] hover:scale-125 transition">▼</button>
                    </div>

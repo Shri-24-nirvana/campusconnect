@@ -32,11 +32,32 @@ export class QnaService {
   }
 
   async toggleUpvote(userId: string, entityId: string, type: string) {
-      if(type === 'ANSWER') {
-          return this.prisma.answer.update({
-              where: { id: entityId },
-              data: { upvotes: { increment: 1 } }
+      if (type === 'ANSWER' || type === 'QUESTION') {
+          const existingVote = await this.prisma.vote.findFirst({
+              where: { userId, targetId: entityId, type: 'UPVOTE' }
           });
+
+          if (existingVote) {
+              await this.prisma.vote.delete({ where: { id: existingVote.id } });
+              if (type === 'ANSWER') {
+                  return this.prisma.answer.update({
+                      where: { id: entityId },
+                      data: { upvotes: { decrement: 1 } }
+                  });
+              }
+              return { status: 'removed' };
+          } else {
+              await this.prisma.vote.create({
+                  data: { userId, targetId: entityId, type: 'UPVOTE' }
+              });
+              if (type === 'ANSWER') {
+                  return this.prisma.answer.update({
+                      where: { id: entityId },
+                      data: { upvotes: { increment: 1 } }
+                  });
+              }
+              return { status: 'added' };
+          }
       }
       return null;
   }
