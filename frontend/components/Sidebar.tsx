@@ -22,17 +22,18 @@ export default function Sidebar() {
         {links.map((link) => {
           const isActive = pathname === link.path;
           return (
-            <Link key={link.name} href={link.path}>
-              <div
-                className={`flex items-center gap-4 px-6 py-3 rounded-xl transition-all duration-300 ${
-                  isActive 
-                  ? 'bg-gradient-to-r from-[#00e6e6]/20 to-transparent border-l-4 border-[#00e6e6] text-[#00e6e6] shadow-[0_0_10px_rgba(0,230,230,0.5)]' 
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <span className="text-xl opacity-80">{link.icon}</span>
-                <span className="font-semibold tracking-wide text-[15px]">{link.name}</span>
-              </div>
+            <Link 
+              key={link.name} 
+              href={link.path}
+              prefetch={true}
+              className={`flex items-center gap-4 px-6 py-3 rounded-xl transition-all duration-300 ${
+                isActive 
+                ? 'bg-gradient-to-r from-[#00e6e6]/20 to-transparent border-l-4 border-[#00e6e6] text-[#00e6e6] shadow-[0_0_10px_rgba(0,230,230,0.5)]' 
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <span className="text-xl opacity-80">{link.icon}</span>
+              <span className="font-semibold tracking-wide text-[15px]">{link.name}</span>
             </Link>
           );
         })}
