@@ -67,6 +67,7 @@ export default function TeamsView() {
        })
        .then(res => res.json())
        .then(data => {
+           console.log("MY TEAMS LOADED:", data);
            if (Array.isArray(data)) {
                setMyTeams(data.map((t: any) => {
                    const pendingCount = t.members?.filter((m: any) => m.status === 'PENDING').length || 0;
@@ -81,7 +82,7 @@ export default function TeamsView() {
                    };
                }));
            }
-       }).catch(() => {});
+       }).catch(err => console.error("MY TEAMS FETCH ERROR:", err));
 
        // Fetch Global Teams
        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams`, {
