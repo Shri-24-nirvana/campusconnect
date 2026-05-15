@@ -367,7 +367,7 @@ export default function TeamsView() {
                              <br/><span className="opacity-50 text-[9px]">(Debug: {allUsers.length} global users loaded)</span>
                           </div>
                       )}
-                    </div>              </div>
+                    </div>
                 </div>
               </div>
 
