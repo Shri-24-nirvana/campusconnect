@@ -22,12 +22,19 @@ export default function ProfileView() {
       setUser(u);
       setFormData((prev: any) => ({ ...prev, name: u.name, email: u.email }));
     }
+  }, []);
 
-    gsap.fromTo(".prof-item", 
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }
-    );
+  useEffect(() => {
+    if (profile && Object.keys(profile).length > 0) {
+      gsap.fromTo(".prof-item", 
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }
+      );
+    }
+  }, [profile]);
 
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
     if (token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/profile`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.ok ? res.json() : null)
