@@ -42,7 +42,7 @@ export default function Dashboard() {
       <div className="md:col-span-4 flex flex-col gap-8 h-full">
         
         {/* Profile Visibility Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-[#00e6e6]/40 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between" style={{ minHeight: '300px' }}>
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-[#00e6e6]/40 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between" style={{ minHeight: '300px' }}>
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-white font-bold tracking-widest text-[13px]">PROFILE VISIBILITY</h2>
             <span className="text-gray-500 cursor-pointer hover:text-white transition text-lg">⚙️</span>
@@ -82,7 +82,7 @@ export default function Dashboard() {
         </div>
 
         {/* Team Finder Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1">
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-white font-bold tracking-widest text-[13px]">TEAM FINDER</h2>
             <span className="text-[#00e6e6] text-xs cursor-pointer hover:text-white transition">View More ˅</span>
@@ -122,7 +122,7 @@ export default function Dashboard() {
       <div className="md:col-span-5 flex flex-col gap-8 h-full">
         
         {/* Students Directory Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)]" style={{ minHeight: '340px' }}>
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)]" style={{ minHeight: '340px' }}>
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-white font-bold tracking-widest text-[13px]">STUDENTS DIRECTORY</h2>
             <button className="text-[10px] font-bold tracking-widest bg-[#111928] border border-white/10 px-4 py-2 rounded-lg text-gray-400">ANIMATED ˅</button>
@@ -181,13 +181,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex justify-center mt-6">
-            <div className="w-12 h-1.5 bg-[#00e6e6] rounded-full drop-shadow-[0_0_5px_#00e6e6]"></div>
+            <div className="w-12 h-1.5 bg-[#00e6e6] rounded-full shadow-[0_0_5px_#00e6e6]"></div>
             <div className="w-3 h-1.5 bg-white/10 rounded-full ml-2"></div>
           </div>
         </div>
 
         {/* Open Teams Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 relative overflow-hidden">
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 relative overflow-hidden">
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#BC13FE] rounded-full filter blur-[150px] opacity-[0.08] pointer-events-none"></div>
           <div className="flex justify-between items-center mb-8 relative z-10">
             <h2 className="text-white font-bold tracking-widest uppercase text-[13px]">OPEN TEAMS</h2>
@@ -253,7 +253,7 @@ export default function Dashboard() {
       <div className="md:col-span-3 flex flex-col gap-8 h-full">
         
         {/* Upcoming Events Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit">
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit">
           <h2 className="text-white font-bold tracking-widest uppercase text-[13px] mb-8">UPCOMING EVENTS</h2>
           <div className="flex flex-col gap-5">
             <div className="bg-transparent border border-[#00e6e6]/60 rounded-2xl p-5 shadow-[inset_0_0_20px_rgba(0,230,230,0.1)] border-l-[6px] border-l-[#00e6e6] hover:bg-white/5 transition-colors cursor-pointer">
@@ -274,7 +274,7 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Messages Panel */}
-        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 overflow-y-auto css-scrollbar">
+        <div className="dash-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 overflow-y-auto css-scrollbar">
           <h2 className="text-white font-bold tracking-widest uppercase text-[13px] mb-8">RECENT MESSAGES</h2>
           
           <div className="flex flex-col gap-6">

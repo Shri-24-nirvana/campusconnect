@@ -185,7 +185,7 @@ export default function ProfileView() {
       {/* LEFT COLUMN: Identity & Skills */}
       <div className="md:col-span-4 flex flex-col gap-6">
         <div className="prof-item flex gap-4 w-full">
-          <div onClick={() => profile?.github && window.open(profile.github.startsWith('http') ? profile.github : `https://${profile.github}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#00e6e6]/60 transition-colors group relative overflow-hidden">
+          <div onClick={() => profile?.github && window.open(profile.github.startsWith('http') ? profile.github : `https://${profile.github}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#00e6e6]/60 transition-colors group relative overflow-hidden">
              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#00e6e6]/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
              <div className="w-12 h-12 bg-[#111928] border border-white/10 rounded-2xl flex justify-center items-center text-xl shadow-[0_0_10px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform">🐙</div>
              <div>
@@ -193,7 +193,7 @@ export default function ProfileView() {
                 <p className="text-white text-sm font-bold tracking-widest mt-1">{profile?.github ? 'Linked' : 'Not Linked'}</p>
              </div>
           </div>
-          <div onClick={() => profile?.linkedin && window.open(profile.linkedin.startsWith('http') ? profile.linkedin : `https://${profile.linkedin}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 drop-shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#BC13FE]/60 transition-colors group relative overflow-hidden">
+          <div onClick={() => profile?.linkedin && window.open(profile.linkedin.startsWith('http') ? profile.linkedin : `https://${profile.linkedin}`, '_blank')} className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 flex items-center gap-4 flex-1 shadow-[0_0_15px_rgba(0,0,0,0.5)] cursor-pointer hover:border-[#BC13FE]/60 transition-colors group relative overflow-hidden">
              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-[#BC13FE]/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
              <div className="w-12 h-12 bg-[#111928] border border-white/10 rounded-2xl flex justify-center items-center text-xl shadow-[0_0_10px_rgba(0,0,0,0.3)] group-hover:scale-110 transition-transform">💼</div>
              <div>
@@ -202,7 +202,7 @@ export default function ProfileView() {
              </div>
           </div>
         </div>
-        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between h-full">
+        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col justify-between h-full">
           
           <div className="w-full bg-gradient-to-t from-[#00e6e6]/10 to-transparent border-[3px] border-[#00e6e6]/60 rounded-3xl flex flex-col items-center justify-end pt-12 p-3 relative overflow-hidden shadow-[inset_0_0_30px_rgba(0,230,230,0.4)]">
             <div className="absolute top-4 right-4 w-3 h-3 rounded-full bg-[#00e6e6] shadow-[0_0_10px_#00e6e6] z-30"></div>
@@ -247,7 +247,7 @@ export default function ProfileView() {
       <div className="md:col-span-8 flex flex-col gap-6">
         
         {/* Bio Segment */}
-        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 relative overflow-hidden flex flex-col">
+        <div className="prof-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 relative overflow-hidden flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-white font-bold tracking-widest text-[16px]">Bio / Achievements</h2>
             <span onClick={() => setShowEditModal(true)} className="text-gray-500 cursor-pointer hover:text-white transition text-lg">⚙️</span>
@@ -351,7 +351,7 @@ export default function ProfileView() {
 
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
-          <div className="w-[1200px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative flex flex-col h-[75vh]">
+          <div className="w-[1200px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative flex flex-col h-[75vh]">
             <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
               <h2 className="text-white text-xl font-bold tracking-widest uppercase flex items-center gap-3">
                  <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#00e6e6] to-blue-500 flex justify-center items-center text-black font-black">C</span>

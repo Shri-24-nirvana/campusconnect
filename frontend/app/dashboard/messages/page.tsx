@@ -114,7 +114,7 @@ export default function MessagesView() {
       
       {/* LEFT COLUMN: Contacts / Search */}
       <div className="md:col-span-4 flex flex-col gap-6 h-[85vh]">
-        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col h-full overflow-hidden">
+        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex flex-col h-full overflow-hidden">
           
           <div className="relative mb-6">
             <input type="text" placeholder="Search Connections" className="w-full bg-[#111928]/60 border border-white/10 rounded-2xl px-12 py-3 text-white focus:outline-none focus:border-[var(--color-neon-blue)] transition-colors" />
@@ -148,7 +148,7 @@ export default function MessagesView() {
 
       {/* CENTER COLUMN: Chat Interface */}
       <div className="md:col-span-5 h-[85vh]">
-        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-[#00e6e6]/30 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-full flex flex-col relative overflow-hidden">
+        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-md border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] h-full flex flex-col relative overflow-hidden">
           
           <div className="flex justify-between items-center pb-6 border-b border-white/10 shrink-0">
             <h2 className="text-white font-bold tracking-widest uppercase text-sm">
@@ -221,7 +221,7 @@ export default function MessagesView() {
       {/* RIGHT COLUMN: Events & Global Messages (Matching Home Layout Sidebar Logic) */}
       <div className="md:col-span-3 flex flex-col gap-8 h-[85vh]">
         {/* Same Static structure */}
-        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-2xl border border-[var(--color-neon-purple)]/20 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit">
+        <div className="msg-panel bg-[#0d1424]/70 backdrop-blur-md border border-[var(--color-neon-purple)]/20 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit">
           <h2 className="text-white font-bold tracking-widest uppercase text-[12px] mb-6">UPCOMING EVENTS</h2>
           <div className="flex flex-col gap-4">
             <div className="bg-transparent border border-[#00e6e6]/60 rounded-xl p-4 shadow-[inset_0_0_15px_rgba(0,230,230,0.1)] border-l-[4px] border-l-[#00e6e6] cursor-pointer">

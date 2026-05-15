@@ -114,7 +114,7 @@ export default function JobsInternshipsView() {
        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pr-8 overflow-y-auto css-scrollbar pb-16">
           <div className="md:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-6">
           {opportunities.map((opp, i) => (
-              <div key={opp.id} className={`opp-card bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 hover:border-${opp.type === 'HACKATHON' ? '[#BC13FE]' : '[#00e6e6]'}/50 rounded-[2rem] p-6 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col relative transition-all`}>
+              <div key={opp.id} className={`opp-card bg-[#0d1424]/70 backdrop-blur-md border border-white/5 hover:border-${opp.type === 'HACKATHON' ? '[#BC13FE]' : '[#00e6e6]'}/50 rounded-[2rem] p-6 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col relative transition-all`}>
                  <div className="absolute top-6 right-6 text-gray-500 cursor-pointer hover:text-white">⋮</div>
                  <div className="flex items-center gap-3 mb-6">
                     <img src="/avatar_1.png" className={`w-10 h-10 rounded-full border ${opp.type === 'HACKATHON' ? 'border-[#BC13FE]' : 'border-white/20'} object-cover bg-[#111928]`} />
@@ -155,7 +155,7 @@ export default function JobsInternshipsView() {
 
            {/* Upcoming Events Module */}
            <div className="md:col-span-1 flex flex-col gap-6">
-              <div className="bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit sticky top-0">
+              <div className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit sticky top-0">
                  <h2 className="text-white font-bold tracking-widest uppercase text-[12px] mb-6">UPCOMING EVENTS</h2>
                  
                  <div className="flex flex-col gap-4">
@@ -176,7 +176,7 @@ export default function JobsInternshipsView() {
        {/* Event Details Modal */}
        {activeEvent && (
           <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
-             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in">
+             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in">
                 <button onClick={() => setActiveEvent(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
                 
                 <div className="w-16 h-16 bg-gradient-to-br from-[#111928] to-[#060b13] rounded-2xl border border-white/10 flex justify-center items-center text-3xl shadow-[0_0_15px_rgba(0,0,0,0.5)] mb-6">
@@ -202,7 +202,7 @@ export default function JobsInternshipsView() {
        {/* Interactive Comment Modal overlay */}
        {activeCommentPost && (
          <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
-           <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative flex flex-col">
+           <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative flex flex-col">
              <div className="flex justify-between items-center mb-6">
                 <h2 className="text-white font-bold tracking-widest text-sm uppercase">Add Comment to {activeCommentPost.title}</h2>
                 <button onClick={() => setActiveCommentPost(null)} className="text-gray-400 hover:text-white text-xl">✕</button>
@@ -227,7 +227,7 @@ export default function JobsInternshipsView() {
        {/* Create Opportunity Modal */}
        {showCreateModal && (
           <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
-             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col">
+             <div className="w-[600px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col">
                 <button onClick={() => setShowCreateModal(false)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
                 
                 <h2 className="text-white text-xl font-bold tracking-widest uppercase mb-6">Create Opportunity</h2>

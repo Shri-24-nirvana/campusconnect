@@ -77,7 +77,7 @@ export default function QnAAlumniHub() {
           </h1>
        </div>
 
-       <div className="bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex max-w-[55%] mb-8 relative">
+       <div className="bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex max-w-[55%] mb-8 relative">
           <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-[#00e6e6]/30 to-transparent pointer-events-none opacity-50"></div>
           <input 
               type="text" 
@@ -108,7 +108,7 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/60 border border-[#00e6e6]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#00e6e6]/10 mr-6">
-                      <button onClick={() => handleEntityVote('q1', 1)} className={`${votedItems['q1'] ? 'text-white drop-shadow-[0_0_10px_#fff]' : 'text-[#00e6e6]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
+                      <button onClick={() => handleEntityVote('q1', 1)} className={`${votedItems['q1'] ? 'text-white shadow-[0_0_10px_#fff]' : 'text-[#00e6e6]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
                       <span className="text-white font-black text-xl mb-2">{10 + (votes['q1'] || 0)}</span>
                       <button onClick={() => handleEntityVote('q1', -1)} className="text-[#00e6e6]/50 text-xl hover:text-[#00e6e6] hover:scale-125 transition">▼</button>
                    </div>
@@ -148,7 +148,7 @@ export default function QnAAlumniHub() {
                 
                 <div className="bg-[#111928]/40 border border-[#BC13FE]/30 rounded-3xl p-6 ml-2 flex shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                    <div className="flex flex-col items-center shrink-0 pr-6 border-r border-[#BC13FE]/10 mr-6">
-                      <button onClick={() => handleEntityVote('q2', 1)} className={`${votedItems['q2'] ? 'text-white drop-shadow-[0_0_10px_#fff]' : 'text-[#BC13FE]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
+                      <button onClick={() => handleEntityVote('q2', 1)} className={`${votedItems['q2'] ? 'text-white shadow-[0_0_10px_#fff]' : 'text-[#BC13FE]'} text-xl mb-2 hover:scale-125 transition`}>▲</button>
                       <span className="text-white font-black text-xl mb-2">{2 + (votes['q2'] || 0)}</span>
                       <button onClick={() => handleEntityVote('q2', -1)} className="text-[#BC13FE]/50 text-xl hover:text-[#BC13FE] hover:scale-125 transition">▼</button>
                    </div>
@@ -190,7 +190,7 @@ export default function QnAAlumniHub() {
 
           {/* Sidebar Modules (Right 4 Cols) */}
           <div className="lg:col-span-4 flex flex-col gap-6 relative">
-             <div className="sticky top-28 bg-[#0d1424]/70 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-6 shadow-[0_0_30px_rgba(0,0,0,0.6)] flex flex-col">
+             <div className="sticky top-28 bg-[#0d1424]/70 backdrop-blur-md border border-white/10 rounded-[2rem] p-6 shadow-[0_0_30px_rgba(0,0,0,0.6)] flex flex-col">
                 <div className="absolute inset-0 bg-gradient-to-b from-[#00e6e6]/5 to-transparent rounded-[2rem] pointer-events-none"></div>
                 <h2 className="text-white text-[13px] font-bold tracking-widest uppercase mb-4 z-10">ACTIVE ALUMNI MENTORS</h2>
                 <p className="text-xs text-gray-400 leading-relaxed mb-6 z-10">All threaded discussion of active alumni mentors.</p>

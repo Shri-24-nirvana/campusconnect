@@ -72,7 +72,7 @@ export default function StudentsDirectoryView() {
           </div>
        </div>
 
-       <div className="flex-1 bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-8 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] overflow-y-auto css-scrollbar">
+       <div className="flex-1 bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-8 shadow-[0_0_20px_rgba(0,0,0,0.7)] overflow-y-auto css-scrollbar">
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
              {/* Card Array generation */}
@@ -112,7 +112,7 @@ export default function StudentsDirectoryView() {
        {/* View Profile Modal */}
        {viewingStudent && (
           <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-md bg-black/60 p-4">
-             <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col items-center">
+             <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,230,230,0.15)] relative animate-fade-in flex flex-col items-center">
                 <button onClick={() => setViewingStudent(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
                 
                 <div className="w-32 h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-full flex justify-center items-center relative overflow-hidden border-2 border-[#00e6e6]/60 mb-6 shadow-[0_0_30px_rgba(0,230,230,0.2)]">

@@ -45,7 +45,7 @@ export default function TopNav() {
 
   return (
     <nav className="h-28 w-full flex justify-between items-center px-12 absolute top-0 left-0 z-50 pointer-events-none">
-      <div className="flex items-center gap-4 drop-shadow-[0_0_15px_rgba(0,230,230,0.4)] pointer-events-auto mt-4">
+      <div className="flex items-center gap-4 shadow-[0_0_15px_rgba(0,230,230,0.4)] pointer-events-auto mt-4">
         <div className="flex items-center gap-6">
           <svg width="60" height="60" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100C77.6142 100 100 77.6142 100 50H80C80 66.5685 66.5685 80 50 80C33.4315 80 20 66.5685 20 50C20 33.4315 33.4315 20 50 20V0Z" fill="#00e6e6"/>
@@ -61,7 +61,7 @@ export default function TopNav() {
       </div>
 
       <div className="flex items-center gap-10 pointer-events-auto mt-4">
-        <div className="flex items-center gap-4 drop-shadow-[0_0_15px_rgba(0,230,230,0.5)]">
+        <div className="flex items-center gap-4 shadow-[0_0_15px_rgba(0,230,230,0.5)]">
           <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#00e6e6] relative bg-[#0a1220]">
              <img src={user?.avatarUrl || "/avatar_1.png"} alt="Avatar" className="w-full h-full object-cover scale-150 relative top-2" />
           </div>
@@ -78,7 +78,7 @@ export default function TopNav() {
           </div>
           
           {showNotifications && (
-             <div className="absolute top-12 right-0 w-80 bg-[#0d1424]/95 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-2xl shadow-[0_0_30px_rgba(0,230,230,0.15)] flex flex-col overflow-hidden animate-fade-in z-50">
+             <div className="absolute top-12 right-0 w-80 bg-[#0d1424]/95 backdrop-blur-lg border border-[#00e6e6]/30 rounded-2xl shadow-[0_0_30px_rgba(0,230,230,0.15)] flex flex-col overflow-hidden animate-fade-in z-50">
                 <div className="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-white/5">
                    <h3 className="text-white font-bold tracking-widest text-sm uppercase">Notifications</h3>
                    <span className="text-[#00e6e6] text-xs font-bold cursor-pointer hover:underline">Mark all read</span>

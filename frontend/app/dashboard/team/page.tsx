@@ -152,7 +152,7 @@ export default function TeamsView() {
       
       {/* LEFT COLUMN: Your Teams */}
       <div className="md:col-span-3 flex flex-col gap-6">
-        <div className="team-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit min-h-[300px]">
+        <div className="team-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] h-fit min-h-[300px]">
           <h2 className="text-white font-bold tracking-widest text-[14px] mb-6 uppercase">Your Active Teams</h2>
           
           {myTeams.length === 0 ? (
@@ -191,7 +191,7 @@ export default function TeamsView() {
       <div className="md:col-span-6 flex flex-col gap-6">
         
         {/* Student Directory Panel */}
-        <div className="team-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] border-t border-t-[#00e6e6]/30">
+        <div className="team-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] border-t border-t-[#00e6e6]/30">
           <h2 className="text-white font-bold tracking-widest text-[14px] mb-6 uppercase">Student Directory (Quick Add)</h2>
           
           <div className="flex gap-4 overflow-x-auto pb-2 css-scrollbar">
@@ -216,7 +216,7 @@ export default function TeamsView() {
         </div>
 
         {/* Global Teams Feed */}
-        <div className="team-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 overflow-y-auto css-scrollbar min-h-[400px]">
+        <div className="team-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1 overflow-y-auto css-scrollbar min-h-[400px]">
           <h2 className="text-white font-bold tracking-widest text-[14px] mb-6 uppercase">Global Teams Looking For Members</h2>
           <div className="flex flex-col gap-4">
             
@@ -281,7 +281,7 @@ export default function TeamsView() {
 
       {/* RIGHT COLUMN: Upcoming Events */}
       <div className="md:col-span-3 flex flex-col gap-6">
-        <div className="team-item bg-[#0d1424]/70 backdrop-blur-2xl border border-white/5 rounded-3xl p-6 drop-shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1">
+        <div className="team-item bg-[#0d1424]/70 backdrop-blur-md border border-white/5 rounded-3xl p-6 shadow-[0_0_20px_rgba(0,0,0,0.7)] flex-1">
           <h2 className="text-white font-bold tracking-widest text-[14px] mb-6 uppercase">Upcoming Events</h2>
           
           <div className="flex flex-col gap-4">
@@ -304,7 +304,7 @@ export default function TeamsView() {
       {/* CENTRAL REGISTRATION MODAL OVERLAY */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/60 p-4">
-          <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-3xl border border-[#00e6e6]/50 rounded-[2rem] p-8 shadow-[0_0_50px_rgba(0,230,230,0.2)] relative animate-fade-in">
+          <div className="w-[500px] bg-[#0d1424]/90 backdrop-blur-lg border border-[#00e6e6]/50 rounded-[2rem] p-8 shadow-[0_0_50px_rgba(0,230,230,0.2)] relative animate-fade-in">
             <button onClick={() => setShowModal(false)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
             <h2 className="text-white text-xl font-bold tracking-widest mb-8 uppercase">Register for {activeEvent?.name}</h2>
             
@@ -395,7 +395,7 @@ export default function TeamsView() {
       {/* TEAM MANAGEMENT MODAL */}
       {managingTeam && (
         <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/60 p-4">
-          <div className="w-[450px] bg-[#0d1424]/95 backdrop-blur-3xl border border-[#00e6e6]/30 rounded-[2rem] p-8 shadow-[0_0_50px_rgba(0,230,230,0.2)] relative animate-fade-in flex flex-col items-center">
+          <div className="w-[450px] bg-[#0d1424]/95 backdrop-blur-lg border border-[#00e6e6]/30 rounded-[2rem] p-8 shadow-[0_0_50px_rgba(0,230,230,0.2)] relative animate-fade-in flex flex-col items-center">
              <button onClick={() => setManagingTeam(null)} className="absolute top-6 right-6 text-gray-400 hover:text-white text-xl z-20">✕</button>
              
              <div className="w-20 h-20 bg-gradient-to-t from-[#111928] to-transparent border border-white/10 rounded-[1.5rem] flex justify-center items-end relative overflow-hidden mb-6 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
