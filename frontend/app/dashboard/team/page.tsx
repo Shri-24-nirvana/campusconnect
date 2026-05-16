@@ -69,16 +69,25 @@ export default function TeamsView() {
        .then(data => {
            console.log("MY TEAMS LOADED:", data);
            if (Array.isArray(data)) {
+               let myId = '';
+               try {
+                  const userStr = localStorage.getItem('user');
+                  if (userStr && userStr !== 'undefined') myId = JSON.parse(userStr).id;
+               } catch (e) { }
+
                setMyTeams(data.map((t: any) => {
                    const pendingCount = t.members?.filter((m: any) => m.status === 'PENDING').length || 0;
                    const allAccepted = t.members?.length > 1 && pendingCount === 0;
+                   const myMemberRec = t.members?.find((m: any) => m.userId === myId);
                    return {
                        id: t.id,
                        name: t.name,
                        event: t.targetEvent,
                        membersCount: t.members?.length || 1,
                        pendingCount,
-                       allAccepted
+                       allAccepted,
+                       myStatus: myMemberRec?.status || 'ACCEPTED',
+                       amILeader: t.createdById === myId
                    };
                }));
            }
@@ -421,21 +430,37 @@ export default function TeamsView() {
                 <button onClick={() => setManagingTeam(null)} className="flex-1 border border-white/10 text-white font-bold text-xs py-3 rounded-xl hover:bg-white/5 transition-colors tracking-widest uppercase">
                   Close
                 </button>
-                <button onClick={async () => {
-                   try {
-                       const token = localStorage.getItem('access_token');
-                       await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/${managingTeam.id}`, {
-                           method: 'DELETE',
-                           headers: { Authorization: `Bearer ${token}` }
-                       });
-                       setMyTeams(prev => prev.filter(t => t.id !== managingTeam.id));
-                       setManagingTeam(null);
-                   } catch (e) {
-                       console.error(e);
-                   }
-                }} className="flex-1 bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-xs py-3 rounded-xl hover:bg-red-500 hover:text-white transition-colors tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                  Disband Team
-                </button>
+                {managingTeam.myStatus === 'PENDING' ? (
+                   <button onClick={async () => {
+                       try {
+                           const token = localStorage.getItem('access_token');
+                           await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/accept/${managingTeam.id}`, {
+                               method: 'PUT',
+                               headers: { Authorization: `Bearer ${token}` }
+                           });
+                           setMyTeams(prev => prev.map(t => t.id === managingTeam.id ? {...t, myStatus: 'ACCEPTED', pendingCount: Math.max(0, t.pendingCount - 1), allAccepted: t.membersCount > 1 && (t.pendingCount - 1) <= 0} : t));
+                           setManagingTeam(null);
+                       } catch (e) {}
+                   }} className="flex-1 bg-[#00e6e6]/20 border border-[#00e6e6]/50 text-[#00e6e6] font-bold text-xs py-3 rounded-xl hover:bg-[#00e6e6] hover:text-black transition-colors tracking-widest uppercase shadow-[0_0_15px_rgba(0,230,230,0.2)]">
+                     Accept Invitation
+                   </button>
+                ) : managingTeam.amILeader ? (
+                   <button onClick={async () => {
+                       try {
+                           const token = localStorage.getItem('access_token');
+                           await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/${managingTeam.id}`, {
+                               method: 'DELETE',
+                               headers: { Authorization: `Bearer ${token}` }
+                           });
+                           setMyTeams(prev => prev.filter(t => t.id !== managingTeam.id));
+                           setManagingTeam(null);
+                       } catch (e) {
+                           console.error(e);
+                       }
+                   }} className="flex-1 bg-red-500/20 border border-red-500/50 text-red-400 font-bold text-xs py-3 rounded-xl hover:bg-red-500 hover:text-white transition-colors tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                     Disband Team
+                   </button>
+                ) : null}
              </div>
           </div>
         </div>
