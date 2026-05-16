@@ -32,7 +32,7 @@ export default function TeamsView() {
     const token = localStorage.getItem('access_token');
     if (token) {
        // Fetch All Users
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory?t=${Date.now()}`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/users/directory`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
@@ -42,7 +42,7 @@ export default function TeamsView() {
        }).catch(e => console.error("ALL USERS ERROR:", e));
 
        // Fetch Connections
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())
@@ -62,7 +62,7 @@ export default function TeamsView() {
        }).catch(e => console.error("CONNECTIONS ERROR:", e));
 
        // Fetch My Teams
-       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams?t=${Date.now()}`, {
+       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/teams/my-teams`, {
           headers: { Authorization: `Bearer ${token}` }
        })
        .then(res => res.json())

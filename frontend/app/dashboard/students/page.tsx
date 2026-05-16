@@ -9,13 +9,11 @@ export default function StudentsDirectoryView() {
   const [viewingStudent, setViewingStudent] = useState<any>(null);
 
   useEffect(() => {
-    if (users.length > 0) {
-      gsap.fromTo(".dir-card", 
-        { opacity: 0, scale: 0.9 },
-        { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.5)" }
-      );
-    }
-  }, [users]);
+    gsap.fromTo(".dir-card", 
+      { opacity: 0, scale: 0.9 },
+      { opacity: 1, scale: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.5)" }
+    );
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -28,7 +26,7 @@ export default function StudentsDirectoryView() {
             if (Array.isArray(data)) setUsers(data);
         }).catch(err => console.error(err));
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections?t=${Date.now()}`, {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/connections`, {
             headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => res.json())
