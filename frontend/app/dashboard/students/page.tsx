@@ -7,6 +7,7 @@ export default function StudentsDirectoryView() {
   const [users, setUsers] = useState<any[]>([]);
   const [connectStatus, setConnectStatus] = useState<Record<string, string>>({});
   const [viewingStudent, setViewingStudent] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     gsap.fromTo(".dir-card", 
@@ -69,7 +70,13 @@ export default function StudentsDirectoryView() {
        <div className="flex justify-between items-center mb-8">
           <h1 className="text-white text-2xl font-black tracking-widest uppercase">GLOBAL NETWORK MATRIX</h1>
           <div className="flex gap-4">
-             <input type="text" placeholder="Search parameters (e.g. Python, CSE)" className="w-96 bg-[#111928]/80 border border-white/10 rounded-full px-6 py-3 text-white outline-none focus:border-[#00e6e6] transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)]" />
+             <input 
+                 type="text" 
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 placeholder="Search parameters (e.g. Python, CSE, Cisco)" 
+                 className="w-96 bg-[#111928]/80 border border-white/10 rounded-full px-6 py-3 text-white outline-none focus:border-[#00e6e6] transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)]" 
+             />
              <button className="bg-[#00e6e6] text-[#060b13] font-black tracking-widest px-8 rounded-full shadow-[0_0_20px_rgba(0,230,230,0.4)] hover:bg-white transition-colors">QUERY</button>
           </div>
        </div>
@@ -78,7 +85,23 @@ export default function StudentsDirectoryView() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
              {/* Card Array generation */}
-             {users.map((userObj) => (
+             {users.filter(userObj => {
+                if (!searchQuery) return true;
+                const q = searchQuery.toLowerCase();
+                if (userObj.name?.toLowerCase().includes(q)) return true;
+                if (userObj.profile?.branch?.toLowerCase().includes(q)) return true;
+                if (userObj.profile?.skills?.some((s: string) => s.toLowerCase().includes(q))) return true;
+                if (userObj.profile?.certificates?.some((c: string) => {
+                    if (typeof c === 'string' && c.startsWith('{')) {
+                        try {
+                            const parsed = JSON.parse(c);
+                            return parsed.name?.toLowerCase().includes(q);
+                        } catch(e) { return false; }
+                    }
+                    return false;
+                })) return true;
+                return false;
+             }).map((userObj) => (
                 <div key={userObj.id} className="dir-card bg-[#060b13]/60 border border-white/5 hover:border-[#00e6e6]/50 transition-colors rounded-[2rem] p-4 flex flex-col shadow-[0_0_25px_rgba(0,0,0,0.5)] relative cursor-pointer group">
                    <div className="absolute top-5 right-5 w-2 h-2 rounded-full bg-[#00e6e6] shadow-[0_0_8px_#00e6e6] z-20"></div>
                    <div className="w-full h-32 bg-gradient-to-b from-[#111928] to-transparent rounded-[1.5rem] flex justify-center items-end relative overflow-hidden border border-white/5 mb-3">

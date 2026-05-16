@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 
+const parseCert = (cert: string) => {
+    if (typeof cert !== 'string') return { url: cert, name: 'Certificate' };
+    if (cert.startsWith('{')) {
+        try { return JSON.parse(cert); } catch(e) { return { url: cert, name: 'Certificate' }; }
+    }
+    return { url: cert, name: 'Certificate' };
+};
+
 export default function ProfileView() {
   const [profile, setProfile] = useState<any>({});
   const [user, setUser] = useState<any>({});
@@ -123,7 +131,7 @@ export default function ProfileView() {
     reader.onloadend = () => {
         setFormData((prev: any) => ({ 
             ...prev, 
-            certificates: [...(prev.certificates || []), reader.result] 
+            certificates: [...(prev.certificates || []), JSON.stringify({ url: reader.result, name: 'New Certificate' })] 
         }));
     };
     reader.readAsDataURL(file);
@@ -326,14 +334,19 @@ export default function ProfileView() {
             <h2 className="text-white font-bold tracking-widest text-[16px] mb-6 pl-2 uppercase">Certificates</h2>
             
             <div className="flex gap-6 overflow-x-auto css-scrollbar pb-4">
-               {profile.certificates.map((cert: string, idx: number) => (
-                  <div key={idx} className="min-w-[200px] h-36 bg-[#111928] border border-[#BC13FE]/30 rounded-2xl p-2 shadow-[0_0_15px_rgba(188,19,254,0.15)] flex flex-col items-center group cursor-pointer hover:border-[#BC13FE]/60 transition relative overflow-hidden" onClick={() => setViewCertificate(cert)}>
-                     <img src={cert} className="w-full h-full object-cover rounded-xl" alt={`Certificate ${idx+1}`} />
-                     <div className="absolute bottom-0 w-full bg-black/80 text-center py-1 opacity-0 group-hover:opacity-100 transition">
-                         <span className="text-[10px] text-white font-bold tracking-widest">VIEW FULL</span>
+               {profile.certificates.map((cert: string, idx: number) => {
+                  const parsed = parseCert(cert);
+                  return (
+                  <div key={idx} className="min-w-[200px] flex flex-col gap-3 group cursor-pointer" onClick={() => setViewCertificate(parsed.url)}>
+                     <div className="w-full h-36 bg-[#111928] border border-[#BC13FE]/30 rounded-2xl p-2 shadow-[0_0_15px_rgba(188,19,254,0.15)] relative overflow-hidden group-hover:border-[#BC13FE]/60 transition">
+                         <img src={parsed.url} className="w-full h-full object-cover rounded-xl" alt={parsed.name} />
+                         <div className="absolute bottom-0 left-0 w-full bg-black/80 text-center py-1 opacity-0 group-hover:opacity-100 transition">
+                             <span className="text-[10px] text-white font-bold tracking-widest">VIEW FULL</span>
+                         </div>
                      </div>
+                     <span className="text-gray-300 font-bold text-xs text-center truncate px-2" title={parsed.name}>{parsed.name}</span>
                   </div>
-               ))}
+               )})}
             </div>
           </div>
         )}
@@ -500,14 +513,32 @@ export default function ProfileView() {
                      
                      <div className="flex flex-col gap-4 mt-2">
                         <div className="flex flex-wrap gap-4">
-                            {(formData.certificates || []).map((cert: string, idx: number) => (
-                                <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-white/20 group">
-                                    <img src={cert} className="w-full h-full object-cover" alt={`Certificate ${idx+1}`} />
-                                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex justify-center items-center">
-                                        <button onClick={() => removeCertificate(idx)} className="text-red-400 font-bold hover:text-red-300">✕ REMOVE</button>
+                            {(formData.certificates || []).map((cert: string, idx: number) => {
+                                const parsed = parseCert(cert);
+                                return (
+                                <div key={idx} className="relative w-32 flex flex-col gap-2 group">
+                                    <div className="w-full h-24 rounded-lg overflow-hidden border border-white/20 relative">
+                                        <img src={parsed.url} className="w-full h-full object-cover" alt={`Certificate ${idx+1}`} />
+                                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex justify-center items-center">
+                                            <button onClick={() => removeCertificate(idx)} className="text-red-400 font-bold hover:text-red-300">✕ REMOVE</button>
+                                        </div>
                                     </div>
+                                    <input 
+                                       type="text" 
+                                       value={parsed.name}
+                                       onChange={(e) => {
+                                           const newName = e.target.value;
+                                           setFormData((prev: any) => {
+                                               const next = [...(prev.certificates || [])];
+                                               next[idx] = JSON.stringify({ url: parsed.url, name: newName });
+                                               return { ...prev, certificates: next };
+                                           });
+                                       }}
+                                       placeholder="Certificate Name"
+                                       className="w-full bg-[#111928] border border-white/10 rounded px-2 py-1 text-[10px] text-white focus:outline-none focus:border-[#00e6e6] text-center"
+                                    />
                                 </div>
-                            ))}
+                            )})}
                         </div>
 
                         {(formData.certificates || []).length < 10 && (
